@@ -6,22 +6,22 @@ import SearchWithFilter from "../SearchWithFilter";
 import FilterComponent from "../Filter";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../SearchBar";
-const FoodDisplay = ({ category, setCategory ,searchTerm, setSearchTerm }) => {
+const FoodDisplay = ({ category, setCategory, searchTerm, setSearchTerm }) => {
   const { food_list } = useContext(StoreContext);
   const [selectedItem, setSelectedItem] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [selectedWeight, setSelectedWeight] = useState("500G");
+  const [selectedWeight, setSelectedWeight] = useState("");
   const [toastMessage, setToastMessage] = useState("");
   const [toastKey, setToastKey] = useState(0);
   const [selectedShell, setSelectedShell] = useState(true);
   const [filterSelected, setFilterSelected] = useState(false);
-
   const navigate = useNavigate();
+
   const toggleFilter = () => {
     setFilterSelected(!filterSelected);
   };
 
-  const filteredFoodList = food_list.filter((item) => 
+  const filteredFoodList = food_list.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (item.category && item.category.toLowerCase().includes(searchTerm.toLowerCase()))
   );
@@ -29,7 +29,7 @@ const FoodDisplay = ({ category, setCategory ,searchTerm, setSearchTerm }) => {
   const handleItemClick = (item) => {
     setSelectedItem(item);
     setQuantity(1);
-    setSelectedWeight("500G");
+    setSelectedWeight(item.weights[0].weight); // Set default to first available weight
     document.body.classList.add("overflow-hidden");
   };
 
@@ -43,46 +43,33 @@ const FoodDisplay = ({ category, setCategory ,searchTerm, setSearchTerm }) => {
   };
 
   const getWeightPrice = () => {
-    switch (selectedWeight) {
-      case "250G":
-        return selectedItem.price * 0.25;
-      case "500G":
-        return selectedItem.price * 0.5;
-      case "1 KG":
-        return selectedItem.price;
-      default:
-        return selectedItem.price;
-    }
+    if (!selectedItem || !selectedWeight) return 0;
+    const weightOption = selectedItem.weights.find(w => w.weight === selectedWeight);
+    return weightOption ? weightOption.price : 0;
   };
 
   const handleAddToCart = () => {
-    if (!selectedItem) return; // Ensure an item is selected
-
+    if (!selectedItem) return;
     const cartItem = {
       name: selectedItem.name,
       quantity,
       weight: selectedWeight,
-      price : getWeightPrice(),
+      price: getWeightPrice(),
       totalprice: getWeightPrice() * quantity,
       image: selectedItem.image,
     };
-
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
     existingCart.push(cartItem);
     localStorage.setItem("cart", JSON.stringify(existingCart));
-
-    // Trigger a custom event to update the cart count in Navbar
     const event = new Event("storage");
     window.dispatchEvent(event);
-
-    // Set the toast message and close the overlay
     setToastMessage("Item added successfully!");
-    setToastKey((prevKey) => prevKey + 1); // Update the key to force re-render
+    setToastKey((prevKey) => prevKey + 1);
     handleCloseOverlay();
   };
-  const handleBuyNow = () => {
-    if (!selectedItem) return; // Ensure an item is selected
 
+  const handleBuyNow = () => {
+    if (!selectedItem) return;
     const cartItem = {
       name: selectedItem.name,
       quantity,
@@ -90,28 +77,16 @@ const FoodDisplay = ({ category, setCategory ,searchTerm, setSearchTerm }) => {
       price: getWeightPrice() * quantity,
       image: selectedItem.image,
     };
-
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
     existingCart.push(cartItem);
     localStorage.setItem("cart", JSON.stringify(existingCart));
-
-    // Trigger a custom event to update the cart count in Navbar
     const event = new Event("storage");
     window.dispatchEvent(event);
-
-    // Set the toast message and close the overlay
     setToastMessage("Item added successfully!");
-    setToastKey((prevKey) => prevKey + 1); // Update the key to force re-render
+    setToastKey((prevKey) => prevKey + 1);
     handleCloseOverlay();
     navigate("/cart");
   };
-  // const applyFilters = (filters) => {
-  //   const { selectedCategory } = filters;
-  //   const newFilteredFoodList = food_list.filter((item) => {
-  //     return selectedCategory === "All" || item.category === selectedCategory;
-  //   });
-  //   setFilteredFoodList(newFilteredFoodList);
-  // };
 
   return (
     <div className="" id="food-display">
@@ -215,7 +190,7 @@ const FoodDisplay = ({ category, setCategory ,searchTerm, setSearchTerm }) => {
 
                   <hr className="mt-2" />
 
-                  <div className="flex gap-2 mt-4">
+                  {/* <div className="flex gap-2 mt-4">
                     {["250G", "500G", "1 KG"].map((weight) => (
                       <button
                         key={weight}
@@ -229,7 +204,18 @@ const FoodDisplay = ({ category, setCategory ,searchTerm, setSearchTerm }) => {
                         {weight}
                       </button>
                     ))}
-                  </div>
+                  </div> */}
+                  <div className="flex gap-2 mt-4">
+                {selectedItem.weights.map((weightOption) => (
+                  <button
+                    key={weightOption.weight}
+                    className={`px-[12px] py-[4px] md:px-[14px] md:py-[6px] font-Nunito font-extrabold text-[#606060] text-[12px] rounded ${selectedWeight === weightOption.weight ?  "border-2 border-[#F7AE1C] bg-[#FFFCF4]": 'border-2 border-[#E6E6E6]'}`}
+                    onClick={() => setSelectedWeight(weightOption.weight)}
+                  >
+                    {weightOption.weight}
+                  </button>
+                ))}
+              </div>
 
                   <div className="flex items-center gap-2 mt-4 justify-between mb-16 md:mb-4">
                     <p className="text-[14px] font-bold text-[#606060] font-Nunito">
