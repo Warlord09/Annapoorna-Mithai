@@ -109,7 +109,7 @@ const OTPVerification = ({
     setTimer(60);
     setCanResend(false);
     setError(""); 
-    handleMobileNumber;
+    handleMobileNumber();
   };
 
  

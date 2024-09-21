@@ -14,11 +14,7 @@ const VerificationSuccess = ({ onClose,setShowAddressForm,setShowOTPVerification
           onClick={onClose}
           className="absolute top-2 right-2 p-2"
         >
-          <img
-            src="closeoverlay.svg"
-            alt="Close"
-            className="w-4 h-4"
-          />
+        
         </button>
         <img
           src="verificationsuccess.svg"

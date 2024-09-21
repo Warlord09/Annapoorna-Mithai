@@ -47,15 +47,17 @@ const CartPage = () => {
   };
 
 
-  const handleMobileNumber = async () => {
-    if (inputValue.length !== 10) {
+  const handleMobileNumber = async (isResend = false) => {
+    if (!isResend && inputValue.length !== 10) {
       setShowError(true);
       return;
     }
-
-    setShowLogin(false);
-    setShowOTPVerification(true);
-
+  
+    if (isResend) {
+      setShowLogin(false);
+      setShowOTPVerification(true);
+    }
+  
     try {
       console.log("Sending OTP to:", inputValue);
       const response = await axios.post(
@@ -69,19 +71,18 @@ const CartPage = () => {
       console.error("Error sending OTP:", error);
       if (error.response) {
         console.error("Server responded with:", error.response.data);
-        // Handle specific error cases based on error.response.data
       } else if (error.request) {
         console.error("No response received:", error.request);
       } else {
         console.error("Error setting up request:", error.message);
       }
-      setShowOTPVerification(false);
-      setShowLogin(true);
-      setShowError(true);
-      
+      if (isResend) {
+        setShowOTPVerification(false);
+        setShowLogin(true);
+        setShowError(true);
+      }
     }
   };
-
 
   useEffect(() => {
     const authToken = localStorage.getItem("authToken");
@@ -323,9 +324,9 @@ const CartPage = () => {
                     </span>
                     Delivery
                   </p>
-                  <p className="font-Nunito font-bold text-[10px] text-[#909090] cursor-pointer">
+                  {/* <p className="font-Nunito font-bold text-[10px] text-[#909090] cursor-pointer">
                     CHANGE
-                  </p>
+                  </p> */}
                 </div>
                 <div>
                 <h1 className="font-Nunito font-semibold text-[12px] px-3 pt-1 text-[#909090]">{formData.addressLine1}</h1>
@@ -500,7 +501,7 @@ const CartPage = () => {
             setLoggedIn={setLoggedIn}
             hasVerified={hasVerified}
             setHasVerified={setHasVerified}
-            handleMobileNumber={handleMobileNumber}
+            handleMobileNumber={()=>handleMobileNumber(true)}
           />
         </div>
       )}
