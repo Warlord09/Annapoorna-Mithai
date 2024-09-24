@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
-const Login = ({ setShowLogin, setShowOTPVerification }) => {
+const Login = ({ setShowLogin, setShowOTPVerification,handleMobileNumber }) => {
   const { inputValue, setInputValue } = useContext(CartContext);
 
   const [showError, setShowError] = useState(false);
@@ -14,41 +14,7 @@ const Login = ({ setShowLogin, setShowOTPVerification }) => {
       setShowError(false);
     }
   };
-  const handleMobileNumber = async () => {
-    if (inputValue.length !== 10) {
-      setShowError(true);
-      return;
-    }
-
-    setShowLogin(false);
-    setShowOTPVerification(true);
-
-    try {
-      console.log("Sending OTP to:", inputValue);
-      const response = await axios.post(
-        "https://annapoorna-backend.onrender.com/customers/send-otp",
-        { mobileNumber: inputValue },
-        { withCredentials: true }
-      );
-      console.log("OTP send response:", response.data);
-      // Handle successful OTP send (e.g., show a success message)
-    } catch (error) {
-      console.error("Error sending OTP:", error);
-      if (error.response) {
-        console.error("Server responded with:", error.response.data);
-        // Handle specific error cases based on error.response.data
-      } else if (error.request) {
-        console.error("No response received:", error.request);
-      } else {
-        console.error("Error setting up request:", error.message);
-      }
-      setShowOTPVerification(false);
-      setShowLogin(true);
-      setShowError(true);
-      // Show an error message to the user
-      // setErrorMessage("Failed to send OTP. Please try again.");
-    }
-  };
+  
 
   return (
     <div className="relative w-[400px] h-auto bg-white rounded-xl p-10 shadow-lg">

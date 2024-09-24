@@ -25,6 +25,7 @@ export const CartProvider = ({ children }) => {
       landmark: '',
       addressLine1: '',
       email: '',
+      preOrderDate: ''
     };
   });
 

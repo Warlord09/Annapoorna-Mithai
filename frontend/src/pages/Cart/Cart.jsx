@@ -46,6 +46,44 @@ const CartPage = () => {
     console.log(cartItems);
   };
 
+
+  const handleMobileNumber = async (isResend = false) => {
+    if (!isResend && inputValue.length !== 10) {
+      setShowError(true);
+      return;
+    }
+  
+    if (isResend) {
+      setShowLogin(false);
+      setShowOTPVerification(true);
+    }
+  
+    try {
+      console.log("Sending OTP to:", inputValue);
+      const response = await axios.post(
+        "https://annapoorna-backend.onrender.com/customers/send-otp",
+        { mobileNumber: inputValue },
+        { withCredentials: true }
+      );
+      console.log("OTP send response:", response.data);
+      // Handle successful OTP send (e.g., show a success message)
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      if (error.response) {
+        console.error("Server responded with:", error.response.data);
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+      } else {
+        console.error("Error setting up request:", error.message);
+      }
+      if (isResend) {
+        setShowOTPVerification(false);
+        setShowLogin(true);
+        setShowError(true);
+      }
+    }
+  };
+
   useEffect(() => {
     const authToken = localStorage.getItem("authToken");
     if (authToken) {
@@ -286,9 +324,9 @@ const CartPage = () => {
                     </span>
                     Delivery
                   </p>
-                  <p className="font-Nunito font-bold text-[10px] text-[#909090] cursor-pointer">
+                  {/* <p className="font-Nunito font-bold text-[10px] text-[#909090] cursor-pointer">
                     CHANGE
-                  </p>
+                  </p> */}
                 </div>
                 <div>
                 <h1 className="font-Nunito font-semibold text-[12px] px-3 pt-1 text-[#909090]">{formData.addressLine1}</h1>
@@ -451,6 +489,7 @@ const CartPage = () => {
             setShowLogin={setShowLogin}
             setShowOTPVerification={setShowOTPVerification}
             setInputValue={setInputValue}
+            handleMobileNumber={handleMobileNumber}
           />
         </div>
       )}
@@ -462,6 +501,7 @@ const CartPage = () => {
             setLoggedIn={setLoggedIn}
             hasVerified={hasVerified}
             setHasVerified={setHasVerified}
+            handleMobileNumber={()=>handleMobileNumber(true)}
           />
         </div>
       )}
