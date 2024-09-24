@@ -26,29 +26,29 @@ export const review = [
   {
     _id: "1",
     content:
-      "Very fast processing and friendly staff. Very much satisfied by the process which is on the spot payment.",
-    name: "Bhavya Sri",
+      "I recently visited Annapoorna Mithai and was very impressed with the variety of sweets and snacks they had to offer. The staff was also very friendly and helpful. I would definitely recommend this shop to anyone looking for a sweet treat.",
+    name: "Abhi Jani",
     stars: star,
   },
   {
     _id: "2",
     content:
-      "Very fast processing and friendly staff. Very much satisfied by the process which is on the spot payment.",
-    name: "Bhavya Sri",
+      "I bought a few sweets from here and let me tell you all were amazing and the quality was awesome too I will definitely recommend this place to you guys Food: 5/5  |  Service: 5/5  |  Atmosphere: 5/5",
+    name: "Amanda Wilson",
     stars: star,
   },
   {
     _id: "3",
     content:
-      "Very fast processing and friendly staff. Very much satisfied by the process which is on the spot payment.",
-    name: "Bhavya Sri",
+      "Wow... What a place..for sweets.. must visit in Madurai",
+    name: "Meena Anilkumar",
     stars: star,
   },
   {
     _id: "4",
     content:
-      "Very fast processing and friendly staff. Very much satisfied by the process which is on the spot payment.",
-    name: "Bhavya Sri",
+      "This is a very good mithai shop or sweet stall and also a restaurant which sells different fast food. Among the sweets I like the typical south Indian ladu, jelebi and mysure pak.",
+    name: "Lajo",
     stars: star,
   },
   {

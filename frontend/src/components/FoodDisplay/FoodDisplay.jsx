@@ -268,7 +268,7 @@ const FoodDisplay = ({ category, setCategory, searchTerm, setSearchTerm }) => {
       )}
 
       {/* Toast Notification */}
-      <Toast key={toastKey} message={toastMessage} duration={1000} />
+      <Toast key={toastKey} message={toastMessage} duration={4000} />
     </div>
   );
 };
