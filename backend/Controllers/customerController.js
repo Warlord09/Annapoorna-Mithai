@@ -422,7 +422,8 @@ exports.verifyOrder = async (req, res) => {
   const user = req.user;
   console.log(user);
   console.log(orderItems);
-
+  console.log("preorder date");
+  console.log(preorderDate);
   const generatedSignature = crypto
     .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
     .update(`${razorpayOrderId}|${paymentId}`)
