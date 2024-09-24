@@ -422,6 +422,7 @@ exports.verifyOrder = async (req, res) => {
   const user = req.user;
   console.log(user);
   console.log(orderItems);
+  if (!preorderDate) preorderDate = null;
   console.log("preorder date");
   console.log(preorderDate);
   const generatedSignature = crypto
