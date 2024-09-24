@@ -10,7 +10,6 @@ const pdf = require("html-pdf");
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const path = require("path");
-//messaging
 const twilio = require("twilio");
 
 const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_KEY);
@@ -33,7 +32,6 @@ exports.signupCustomer = async (req, res) => {
         resolve(result);
       });
     });
-
     return res.status(201).json({
       status: true,
       type: "Sign Up",
@@ -82,105 +80,6 @@ exports.sendOTP = async (req, res) => {
     return res.status(500).send("Failed to send OTP");
   }
 };
-
-// exports.verifyOtp = async (req, res) => {
-//   console.log("hii");
-//   console.log(req.body);
-//   const { mobileNumber, otp } = req.body;
-
-//   try {
-//     const sql = `SELECT
-//           customers.name,
-//           customers.mobile,
-//           customers.email,
-//           customers.password,
-//           customers.role,
-//           login_otp.otp,
-//           login_otp.expiresAt
-//       FROM
-//           customers
-//       JOIN
-//           login_otp
-//       ON
-//           customers.mobile = login_otp.mobile
-//       WHERE
-//           login_otp.mobile = ?`;
-
-//     const result = await new Promise((resolve, reject) => {
-//       db.query(sql, [mobileNumber], (err, result) => {
-//         if (err) {
-//           return reject(err);
-//         }
-//         resolve(result);
-//       });
-//     });
-
-//     if (result.length === 0) {
-//       return res.status(404).json({ status: false, message: "OTP not found" });
-//     }
-
-//     const userRecord = result[0];
-//     console.log(userRecord);
-//     const currentDate = new Date(Date.now())
-//       .toISOString()
-//       .slice(0, 19)
-//       .replace("T", " ");
-
-//     if (new Date(userRecord.expiresAt) < currentDate) {
-//       return res.status(400).json({ status: false, message: "OTP expired" });
-//     }
-
-//     if (userRecord.otp !== otp) {
-//       return res.status(400).json({ status: false, message: "Invalid OTP" });
-//     }
-
-//     const token = jwt.sign(
-//       {
-//         userName: userRecord.name,
-//         email: userRecord.email,
-//         mobile: userRecord.mobile,
-//         role: userRecord.role,
-//       },
-//       SECRET_KEY,
-//       {
-//         expiresIn: "1h",
-//       }
-//     );
-
-//     res.cookie(
-//       "token",
-//       token,
-//       {
-//         userName: userRecord.name,
-//         email: userRecord.email,
-//         mobile: userRecord.mobile,
-//         role: userRecord.role,
-//       },
-//       {
-//         httpOnly: true,
-//         secure: true, // Set to true if using HTTPS on backend
-//         sameSite: "None",
-//       }
-//     );
-
-//     const deleteSQL = `DELETE FROM login_otp WHERE mobile = ?`;
-//     const deleteResult = await new Promise((resolve, reject) => {
-//       db.query(deleteSQL, [mobileNumber], (err, result) => {
-//         if (err) {
-//           return reject(err);
-//         }
-//         resolve(result);
-//       });
-//     });
-
-//     return res.status(200).json({ status: true, message: "Login Successful" });
-//   } catch (error) {
-//     console.log(error);
-//     return res
-//       .status(500)
-//       .json({ status: false, message: "Error validating OTP" });
-//   }
-// };
 
 exports.verifyOtp = async (req, res) => {
   console.log("hii");
@@ -240,10 +139,8 @@ exports.verifyOtp = async (req, res) => {
         mobile: userRecord.mobile,
         role: userRecord.role,
       },
-      SECRET_KEY
-      // {
-      //   expiresIn: "1h",
-      // }
+      SECRET_KEY,
+      { expiresIn: "1h" } // Token will expire in 1 hour
     );
 
     // Clean up OTP after successful login
@@ -515,6 +412,7 @@ exports.verifyOrder = async (req, res) => {
     gst,
     delivery,
     user_mobile,
+    preorderDate,
   } = req.body;
   console.log("body in verify order route");
   console.log(req.body);
@@ -534,24 +432,14 @@ exports.verifyOrder = async (req, res) => {
     try {
       console.log("hash verified");
       console.log(user);
-      // const updateSQL =
-      //   "UPDATE customer_orders SET payment_status = ? WHERE transaction_id = ?";
-      // await new Promise((resolve, reject) => {
-      //   db.query(updateSQL, ["paid", orderId], (err, result) => {
-      //     if (err) {
-      //       return reject(err);
-      //     }
-      //     resolve(result);
-      //   });
-      // });
       const currentDate = new Date(Date.now())
         .toISOString()
         .slice(0, 19)
         .replace("T", " ");
       const sql = `
   INSERT INTO customer_orders
-  (transaction_id, name, mobile,address, order_items, total_price,user_mobile, created_at, payment_status, delivery_status)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
+  (transaction_id, name, mobile,address, order_items, total_price,user_mobile, created_at, preorder_date,payment_status, delivery_status)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
       const result = await new Promise((resolve, reject) => {
         db.query(
           sql,
@@ -564,6 +452,7 @@ exports.verifyOrder = async (req, res) => {
             finalTotalAmount,
             user_mobile,
             currentDate,
+            preorderDate,
             "paid",
             "processing", // Make sure this value matches the expected data type
           ],
@@ -799,7 +688,9 @@ exports.webhook = async (req, res) => {
     res.status(400).json({ status: false, message: "invalid signature" });
   }
 };
-// http://localhost:3000/get-orders?mobileNumber=1234567890
+
+//http://localhost:3000/get-orders?mobileNumber=1234567890
+
 exports.getOrders = async (req, res) => {
   try {
     const { mobileNumber } = req.query;
