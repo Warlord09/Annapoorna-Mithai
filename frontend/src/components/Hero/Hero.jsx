@@ -5,12 +5,12 @@ import { useSwipeable } from "react-swipeable";
 const Hero = () => {
   const slides = [
     {
-      url: "https://raw.githubusercontent.com/sanjvj/Annapoorna_images/refs/heads/main/Banner%20image%201.png",
+      url: 'kajukatli.jpg',
       name: "Product 1",
       price: "₹1400/kg",
     },
     {
-      url: "https://raw.githubusercontent.com/sanjvj/Annapoorna_images/refs/heads/main/Banner%20image%202.png",
+      url: "Product 2.jpg",
       name: "Product 2",
       price: "₹1500/kg",
     },
@@ -43,7 +43,7 @@ const Hero = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       nextSlide();
-    }, 3000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [currentIndex]);
 
@@ -72,7 +72,7 @@ const Hero = () => {
       {/* Image Section */}
       <div
         {...handlers}
-        className="relative flex items-center justify-center w-full h-auto lg:h-screen bg-gradient-to-b from-[#FFFFFF] to-[#FFF9EA] overflow-hidden"
+        className="relative flex items-center justify-center w-full h-auto lg:h-auto bg-gradient-to-b from-[#FFFFFF] to-[#FFF9EA] overflow-hidden"
       >
         <img
           src={slides[currentIndex].url}

@@ -341,7 +341,7 @@ const CartPage = () => {
                 >
                   <div className="flex">
                     <img
-                      src={item.image}
+                      src={item.image[0]||item.image}
                       alt={item.name}
                       className="w-[56px] h-[56px] md:w-[56px] md:h-[56px] lg:w-[64px] lg:h-[64px] mr-4 rounded"
                     />

@@ -17,7 +17,7 @@ export const slides = [
   {
     url: "",
   },
-  {
+  { 
     url: "",
   },
   {
