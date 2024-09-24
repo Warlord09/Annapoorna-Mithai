@@ -9,7 +9,8 @@ const OTPVerification = ({
   onVerificationSuccess,
   setLoggedIn,
   hasVerified,
-  setHasVerified
+  setHasVerified,
+  handleMobileNumber
 }) => {
   const { inputValue } = useContext(CartContext);
   const [otp, setOTP] = useState(["", "", "", "", "", ""]);
@@ -31,25 +32,7 @@ const OTPVerification = ({
     return () => clearInterval(interval);
   }, [timer]);
 
-  // const handleOtp = async() => {
-  //   const otpString = otp.join("");
-  //   if (otpString.length !== 6) {
-  //     setError("Please enter all 6 digits of the OTP.");
-  //     return;
-  //   }
-  //   console.log(inputValue);
-  //   console.log(otpString);
-  //   try{
-  //     const response = await axios.post("https://annapoorna-backend.onrender.com/customers/verify-otp",{
-  //       mobileNumber: inputValue,
-  //       otp : otpString,
-
-  //     },{credentials:"include"})
-  //     console.log(response);
-  //   }catch(error){
-  //     console.error("Error verifying OTP:", error);
-  //   }
-  // }
+  
 
   const handleOtp = async () => {
     const otpString = otp.join("");
@@ -125,7 +108,8 @@ const OTPVerification = ({
     console.log("Resending OTP");
     setTimer(60);
     setCanResend(false);
-    setError(""); // Clear error when resending OTP
+    setError(""); 
+    handleMobileNumber();
   };
 
  

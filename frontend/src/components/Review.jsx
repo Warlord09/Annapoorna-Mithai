@@ -48,7 +48,7 @@ const Review = () => {
               <div key={item._id} className='bg-white rounded-lg shadow-md p-6 mx-2' style={{ minWidth: '409px', height: '202px' }}>
                 <p className='text-gray-700 mb-4'>{item.content}</p>
                 <div className='flex items-center'>
-                  <img src="avatar.svg" alt="Avatar" className='w-8 h-8 rounded-full mr-3' />
+                  {/* <img src="avatar.svg" alt="Avatar" className='w-8 h-8 rounded-full mr-3' /> */}
                   <div>
                     <p className='font-bold'>{item.name}</p>
                     <div className='flex'>
