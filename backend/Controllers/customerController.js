@@ -481,6 +481,7 @@ exports.verifyOrder = async (req, res) => {
       const billData = {
         orderId: orderId,
         orderDate: new Date().toLocaleString(),
+        preorderDate,
         paymentMethod: "Online",
         customerName: userName,
         customerAddress: address,
@@ -546,7 +547,6 @@ exports.verifyOrder = async (req, res) => {
       res.status(500).json({ status: false, error: "Failed to process order" });
     }
   } else {
-    c;
     res.status(400).json({ status: false, error: "Invalid Payment signature" });
   }
 };
