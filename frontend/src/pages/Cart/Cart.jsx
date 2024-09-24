@@ -170,6 +170,7 @@ const CartPage = () => {
                 address: address,
                 mobile: formData.mobile,
                 user_mobile: inputValue,
+                preorderDate: formData.preOrderDate,
               },
               {
                 withCredentials: true,

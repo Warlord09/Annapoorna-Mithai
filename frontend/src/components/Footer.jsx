@@ -12,7 +12,7 @@ const Footer = () => {
         
           <img
             onClick={()=>{navigate('/')}}
-            src="Logo2.svg"
+            src="Logo2.png"
             alt="Logo"
             className="w-16 h-16 cursor-pointer"
           />

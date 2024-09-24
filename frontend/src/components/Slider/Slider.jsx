@@ -2,7 +2,7 @@ import React from "react";
 
 const Slider = () => {
   return (
-    <div className="overflow-hidden py-6 bg-[#AF2126] relative">
+    <div className="overflow-hidden py-3 md:py-6 bg-[#AF2126] relative">
       <div className="flex w-[500%] lg:w-[200%] animate-slide">
         <div className="flex w-1/2 justify-around">
           {/* Flex container for image and text */}
