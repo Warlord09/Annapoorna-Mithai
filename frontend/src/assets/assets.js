@@ -2,6 +2,9 @@ import food_1 from "./food_1.svg";
 import food_2 from "./food_2.svg";
 import food_3 from "./food_3.svg";
 import food_4 from "./food_4.svg";
+import Makhana from "./Makhana.jpg";
+const choco = "https://raw.githubusercontent.com/sanjvj/Annapoorna_images/main/chocobounty.png"
+const kaju = "https://raw.githubusercontent.com/sanjvj/Annapoorna_images/main/kajukatli.png"
 
 import star from "./star 3.svg";
 
@@ -39,8 +42,7 @@ export const review = [
   },
   {
     _id: "3",
-    content:
-      "Wow... What a place..for sweets.. must visit in Madurai",
+    content: "Wow... What a place..for sweets.. must visit in Madurai",
     name: "Meena Anilkumar",
     stars: star,
   },
@@ -65,11 +67,11 @@ export const food_list = [
     _id: "1",
     name: "Kaju katli",
     image:
-      "https://raw.githubusercontent.com/sanjvj/Annapoorna_images/main/kajukatli.png",
+      [kaju],
     weights: [
-      { weight: "1 KG", price: 1460 },
-      { weight: "500G", price: 730 },
-      { weight: "250G", price: 365 },
+      { weight: "250G", price: 310, mrp: 326 },
+      { weight: "500G", price: 620, mrp: 651 },
+      { weight: "1 KG", price: 1240, mrp: 1302 },
     ],
     offer: 1500,
     description:
@@ -80,12 +82,10 @@ export const food_list = [
   {
     _id: "2",
     name: "Choco Bounty",
-    image:
-      "https://raw.githubusercontent.com/sanjvj/Annapoorna_images/main/chocobounty.png",
+    image:[choco],
     weights: [
-      { weight: "1 KG", price: 700 },
-      { weight: "500G", price: 350 },
-      { weight: "250G", price: 175 },
+      { weight: "500G", price: 348, mrp: 365 },
+      { weight: "1 KG", price: 695, mrp: 730 },
     ],
     offer: 25,
     description:
@@ -97,53 +97,39 @@ export const food_list = [
   {
     _id: "3",
     name: "Royal Fruits and Nuts",
-    image: food_3,
+    image:
+      ["https://raw.githubusercontent.com/sanjvj/Annapoorna_images/main/fruitpack.png"],
     weights: [
-      { weight: "1 KG", price: 1570 },
-      { weight: "500G", price: 785 },
-      { weight: "250G", price: 393 },
+      { weight: "500G", price: 715, mrp: 750 },
+      { weight: "1 KG", price: 1429, mrp: 1500 },
     ],
     offer: 1500,
     description:
-      "Fresh Sabudhana comes Roasted peanuts, Sev, and Mixture. Made with Air Fryer Technology.",
+      "Kaju Pineapple, Kaju Kiwi, Kaju strawberry, Kaju Mango, Kaju Blueberry, Anjeer Roll, Kaju Dates Roll",
     category: "Sweets",
     life: "5 Days",
   },
   {
     _id: "4",
     name: "Crunchy Pack",
-    image: food_4,
+    image: [food_4,food_1,food_2],
     weights: [
-      { weight: "1 KG", price: 1570 },
-      { weight: "500G", price: 785 },
+      { weight: "500G", price: 715, mrp: 750 },
+      { weight: "1 KG", price: 1429, mrp: 1500 },
     ],
     offer: 1500,
     description: "Almond Crunch, Pista Crunch and Cashew Crunch",
     category: "Sweets",
     life: "5 Days",
   },
+
   {
     _id: "5",
-    name: "Fruit Pack",
-    image:
-      "https://raw.githubusercontent.com/sanjvj/Annapoorna_images/main/fruitpack.png",
-    weights: [
-      { weight: "1 KG", price: 1570 },
-      { weight: "500G", price: 785 },
-    ],
-    offer: 1500,
-    description:
-      "Kaju Pineapple, Kaju Kiwi, Kaju strawberry, Kaju Mango, Kaju Blueberry, Anjeer Roll, Kaju Dates Roll Ingredient ",
-    category: "Sweets",
-    life: "5 Days",
-  },
-  {
-    _id: "6",
     name: "Elite Gift Pack",
-    image: food_2,
+    image: [food_2],
     weights: [
-      { weight: "1 KG", price: 810 },
-      { weight: "500G", price: 430 },
+      { weight: "500G", price: 430, mrp: 1240 },
+      { weight: "1 KG", price: 810, mrp: 1240 },
     ],
     offer: 1500,
     description:
@@ -152,26 +138,27 @@ export const food_list = [
     life: "5 Days",
   },
   {
-    _id: "7",
-    name: "Premium Gift Pack",
-    image: food_3,
+    _id: "6",
+    name: "Real Fruit Sweets",
+    image: [food_3],
     weights: [
-      { weight: "1 KG", price: 1680 },
-      { weight: "500G", price: 865 },
+      { weight: "250G", price: 357, mrp: 375 },
+      { weight: "500G", price: 715, mrp: 750 },
+      { weight: "1 KG", price: 1429, mrp: 1500 },
     ],
     offer: 1500,
     description:
-      "A combo of sweets made with different types of dryfruits and nuts such as Pistachios, badam, Cashew, Dates, Fig, Strawberry and kiwi. Note: the mentioned items are not guaranteed.",
-    category: "Sweets",
+      "Fresh Sabudhana comes Roasted peanuts, Sev, and Mixture. Made with Air Fryer Technology",
+    category: "Savouries",
     life: "5 Days",
   },
   {
-    _id: "8",
+    _id: "7",
     name: "Kambu Pori",
-    image: food_4,
+    image: [food_4],
     weights: [
-      { weight: "250G", price: 118 },
-      { weight: "100G", price: 47 },
+      { weight: "100G", price: 53, mrp: 80 },
+      { weight: "250G", price: 133, mrp: 200 },
     ],
     offer: 1500,
     description:
@@ -180,12 +167,12 @@ export const food_list = [
     life: "3 Months",
   },
   {
-    _id: "9",
+    _id: "8",
     name: "Seemai Thinnai Mixture",
-    image: food_1,
+    image: [food_1],
     weights: [
-      { weight: "250G", price: 118 },
-      { weight: "100G", price: 47 },
+      { weight: "100G", price: 53, mrp: 80 },
+      { weight: "250G", price: 133, mrp: 200 },
     ],
     offer: 1500,
     description:
@@ -194,10 +181,10 @@ export const food_list = [
     life: "3 Months",
   },
   {
-    _id: "10",
+    _id: "9",
     name: "Potato Chips",
-    image: food_2,
-    weights: [{ weight: "100G", price: 64 }],
+    image: [food_2],
+    weights: [{ weight: "100G", price: 60, mrp: 90 }],
     offer: 1500,
     description:
       "Potato wafers, also known as potato chips or crisps, are thin slices of potatoes that are deep-fried until they become crispy and golden brown. They are a popular snack enjoyed by people all over the world. Potato wafers are loved for their crunchy texture, savory flavor, and versatility. They can be enjoyed on their own as a snack or used as a topping for sandwiches, burgers, or salads.",
@@ -205,12 +192,12 @@ export const food_list = [
     life: "1 Month",
   },
   {
-    _id: "11",
+    _id: "10",
     name: "Oma podi",
-    image: food_3,
+    image: [food_3],
     weights: [
-      { weight: "250G", price: 118 },
-      { weight: "100G", price: 47 },
+      { weight: "100G", price: 53, mrp: 80 },
+      { weight: "250G", price: 133, mrp: 200 },
     ],
     offer: 1500,
     description:
@@ -219,10 +206,21 @@ export const food_list = [
     life: "2 Months",
   },
   {
-    _id: "12",
+    _id: "11",
     name: "Wheat pop",
-    image: food_4,
-    weights: [{ weight: "100G", price: 70 }],
+    image: [food_4],
+    weights: [{ weight: "100G", price: 62, mrp: 95 }],
+    offer: 1500,
+    description:
+      "Fresh Whole Wheat made into puff with Air Fryer Cooking Technology - One of the Best low calorie Snack.",
+    category: "Savouries",
+    life: "2 Months",
+  },
+  {
+    _id: "12",
+    name: "Kavuni Arisi Halwa",
+    image: [food_4],
+    weights: [{ weight: "100G", price: 70, mrp: 100 }],
     offer: 1500,
     description:
       "Fresh Whole Wheat made into puff with Air Fryer Cooking Technology - One of the Best low calorie Snack.",
@@ -231,31 +229,68 @@ export const food_list = [
   },
   {
     _id: "13",
-    name: "Pista Roll",
-    image: food_4,
-    weights: [
-      { weight: "1 KG", price: 1460 },
-      { weight: "500G", price: 730 },
-      { weight: "250G", price: 365 },
-    ],
-    offer: 1500,
-    description:
-      "Fresh Whole Wheat made into puff with Air Fryer Cooking Technology - One of the Best low calorie Snack.",
-    category: "Savouries",
-    life: "2 Months",
-  },
-  {
-    _id: "14",
     name: "Dry Fruit Sweets",
-    image: food_4,
+    image: [food_4],
     weights: [
-      { weight: "1 KG", price: 1570 },
-      { weight: "500G", price: 785 },
-      { weight: "250G", price: 393 },
+      { weight: "250G", price: 357, mrp: 375 },
+      { weight: "500G", price: 715, mrp: 750 },
+      { weight: "1 KG", price: 1429, mrp: 1500 },
     ],
     offer: 1500,
     description: " Dry Fruits such like Kiwi, Strawberry ",
     category: "Sweets",
+    life: "2 Months",
+  },
+  {
+    _id: "14",
+    name: "Cheese Makhanas",
+    image: [Makhana],
+    weights: [{ weight: "80G", price: 170, mrp: 240 }],
+    offer: 1500,
+    description:
+      "Popped water lily (Lotus) seeds roasted with whole whear flour, Citric Acid, Cheddar cheese & Salt",
+    category: "Savouries",
+    life: "4 Months",
+  },
+  {
+    _id: "15",
+    name: "Cream Onion Makhana",
+    image: [Makhana],
+    weights: [{ weight: "80G", price: 170, mrp: 240 }],
+    offer: 1500,
+    description:
+      "Popped water lily (Lotus) seeds roasted with whole whear flour, Citric Acid, Cheddar cheese & Salt",
+    category: "Savouries",
+    life: "4 Months",
+  },
+  {
+    _id: "16",
+    name: "Breakfast Mixture",
+    image: [Makhana],
+    weights: [{ weight: "250G", price: 275, mrp: 400 }],
+    offer: 1500,
+    description:
+      "A combo of Oats, Honey, Pumpkin Seeds, Amonds, Wheat Flakes, Corn Flakes, Cranberry, Black Currant.",
+    life: "2 Months",
+  },
+  {
+    _id: "17",
+    name: "Choco Dip Badam",
+    image: [Makhana],
+    weights: [{ weight: "150G", price: 225, mrp: 300 }],
+    offer: 1500,
+    description:
+      "A combo of Oats, Honey, Pumpkin Seeds, Amonds, Wheat Flakes, Corn Flakes, Cranberry, Black Currant.",
+    life: "2 Months",
+  },
+  {
+    _id: "18",
+    name: "Karupati Kadalai Mithai",
+    image: [Makhana],
+    weights: [{ weight: "200G", price: 125, mrp: 190 }],
+    offer: 1500,
+    description:
+      "A combo of Oats, Honey, Pumpkin Seeds, Amonds, Wheat Flakes, Corn Flakes, Cranberry, Black Currant.",
     life: "2 Months",
   },
 ];
