@@ -3,8 +3,22 @@ import food_2 from "./food_2.svg";
 import food_3 from "./food_3.svg";
 import food_4 from "./food_4.svg";
 import Makhana from "./Makhana.jpg";
+import CreamMakhana from "./Creammakhana.jpg"
 const choco = "https://raw.githubusercontent.com/sanjvj/Annapoorna_images/main/chocobounty.png"
 const kaju = "https://raw.githubusercontent.com/sanjvj/Annapoorna_images/main/kajukatli.png"
+const almond = "https://raw.githubusercontent.com/Warlord09/annapoorna-images/main/Almond crunch/1.png"
+const blueberry = "https://raw.githubusercontent.com/Warlord09/annapoorna-images/main/blueberry/9.png"
+const cashew = "https://raw.githubusercontent.com/Warlord09/annapoorna-images/main/cashew crunch/2.png"
+const omapodi = "https://raw.githubusercontent.com/Warlord09/annapoorna-images/main/omapodi mixture/6.png"
+const navaratna = "https://raw.githubusercontent.com/Warlord09/annapoorna-images/main/navaratna/10.png"
+const kajupineapple = "https://raw.githubusercontent.com/Warlord09/annapoorna-images/main/kaju pineapple/12.png"
+const kajumango = "https://raw.githubusercontent.com/Warlord09/annapoorna-images/main/kaju mango roll/11.png"
+const datesroll = "https://raw.githubusercontent.com/Warlord09/annapoorna-images/main/dates roll/8.png"
+const wheatpop = "https://raw.githubusercontent.com/Warlord09/annapoorna-images/main/wheat pop/5.png"
+const pistacrunch = "https://raw.githubusercontent.com/Warlord09/annapoorna-images/main/pista crunch/3.png"
+const kiwi = "https://raw.githubusercontent.com/Warlord09/annapoorna-images/main/kiwi delight/7.png"
+const strawberry = "https://raw.githubusercontent.com/Warlord09/annapoorna-images/main/strawberry delight/4.png"
+const fruitpack = "https://raw.githubusercontent.com/sanjvj/Annapoorna_images/main/fruitpack.png"
 
 import star from "./star 3.svg";
 
@@ -98,7 +112,7 @@ export const food_list = [
     _id: "3",
     name: "Royal Fruits and Nuts",
     image:
-      ["https://raw.githubusercontent.com/sanjvj/Annapoorna_images/main/fruitpack.png"],
+      [fruitpack,kajupineapple,kajumango,strawberry,blueberry,datesroll],
     weights: [
       { weight: "500G", price: 715, mrp: 750 },
       { weight: "1 KG", price: 1429, mrp: 1500 },
@@ -112,7 +126,7 @@ export const food_list = [
   {
     _id: "4",
     name: "Crunchy Pack",
-    image: [food_4,food_1,food_2],
+    image: [almond,pistacrunch,cashew],
     weights: [
       { weight: "500G", price: 715, mrp: 750 },
       { weight: "1 KG", price: 1429, mrp: 1500 },
@@ -194,7 +208,7 @@ export const food_list = [
   {
     _id: "10",
     name: "Oma podi",
-    image: [food_3],
+    image: [omapodi],
     weights: [
       { weight: "100G", price: 53, mrp: 80 },
       { weight: "250G", price: 133, mrp: 200 },
@@ -208,7 +222,7 @@ export const food_list = [
   {
     _id: "11",
     name: "Wheat pop",
-    image: [food_4],
+    image: [wheatpop],
     weights: [{ weight: "100G", price: 62, mrp: 95 }],
     offer: 1500,
     description:
@@ -230,7 +244,7 @@ export const food_list = [
   {
     _id: "13",
     name: "Dry Fruit Sweets",
-    image: [food_4],
+    image: [kiwi,strawberry],
     weights: [
       { weight: "250G", price: 357, mrp: 375 },
       { weight: "500G", price: 715, mrp: 750 },
@@ -255,7 +269,7 @@ export const food_list = [
   {
     _id: "15",
     name: "Cream Onion Makhana",
-    image: [Makhana],
+    image: [CreamMakhana],
     weights: [{ weight: "80G", price: 170, mrp: 240 }],
     offer: 1500,
     description:
@@ -266,7 +280,7 @@ export const food_list = [
   {
     _id: "16",
     name: "Breakfast Mixture",
-    image: [Makhana],
+    image: [food_1],
     weights: [{ weight: "250G", price: 275, mrp: 400 }],
     offer: 1500,
     description:
@@ -276,11 +290,11 @@ export const food_list = [
   {
     _id: "17",
     name: "Choco Dip Badam",
-    image: [Makhana],
+    image: [almond],
     weights: [{ weight: "150G", price: 225, mrp: 300 }],
     offer: 1500,
     description:
-      "A combo of Oats, Honey, Pumpkin Seeds, Amonds, Wheat Flakes, Corn Flakes, Cranberry, Black Currant.",
+      " Roasted Almond Coated with Chocolate.",
     life: "2 Months",
   },
   {
