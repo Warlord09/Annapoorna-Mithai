@@ -29,7 +29,7 @@ const Shipping = () => {
       <div className="container mx-auto px-4 py-8 font-Nunito">
         <h1 className="text-3xl font-bold mb-6">Shipping Policy</h1>
         <p className="mb-4">
-          At Annapoorna Mithai, we make it our priority to get our fresh, authentic sweets delivered to your doorstep quickly and hassle-free, ensuring a delightful experience every time. Please familiarize yourself with our shipping policy outlined below:
+          At AnnapoornaMithai Sweets & Bakery, we make it our priority to get our fresh, authentic sweets delivered to your doorstep quickly and hassle-free, ensuring a delightful experience every time. Please familiarize yourself with our shipping policy outlined below:
         </p>
 
         <h2 className="text-2xl font-semibold mt-6 mb-4">Shipping Areas:</h2>
@@ -81,7 +81,7 @@ const Shipping = () => {
 
         <h2 className="text-2xl font-semibold mt-6 mb-4">Contact Us</h2>
         <p>For all customer service inquiries, please Reach Us at:</p>
-        <p>Annapoorna Mithai</p>
+        <p>AnnapoornaMithai Sweets & Bakery</p>
         <p>Email: support@annapoornamithai.com</p>
         <p>Mobile: +919600200484</p>
       </div>

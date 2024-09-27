@@ -113,7 +113,7 @@ const Privacy = () => {
         <p className="text-sm font-normal ">
           If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at:
         </p>
-        <p className="text-sm font-normal ">Annapoorna Mithai</p>
+        <p className="text-sm font-normal ">AnnapoornaMithai Sweets & Bakery</p>
         <p className="text-sm font-normal ">Email: support@annapoornamithai.com</p>
         <p className="text-sm font-normal ">Mobile: +919600200484</p>
       </div>
