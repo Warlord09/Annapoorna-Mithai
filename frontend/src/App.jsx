@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Loader from "./components/Loader/Loader";
 import { CartProvider } from "./context/CartContext";
+import Shipping from "./pages/Shipping/Shipping";
 
 
 // Lazy load components
@@ -34,6 +35,7 @@ function App() {
             <Route path="/terms" element={<Terms />} />
             <Route path="/refund" element={<Refund />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/shipping" element={<Shipping></Shipping>} />
             <Route path="/orders" element={<Orders></Orders>} />
             <Route path="/profile" element={<ProfilePage></ProfilePage>} />
             <Route path="/admin/dashboard" element={<Admin></Admin>} />
