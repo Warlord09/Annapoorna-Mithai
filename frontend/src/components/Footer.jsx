@@ -85,6 +85,14 @@ const Footer = () => {
               Refund Policies
             </p>
           </div>
+          <div className="flex items-center gap-2">
+            <p
+              onClick={()=>{navigate('/shipping')}}
+              className="text-[12px] md:text-[16px] font-Nunito font-bold cursor-pointer"
+            >
+              Shipping & Delivery Policy
+            </p>
+          </div>
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">

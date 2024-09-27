@@ -32,7 +32,7 @@ const Privacy = () => {
 
         <h2 className="text-xl font-semibold mt-6 mb-4">PRIVACY STATEMENT</h2>
 
-        <h2 className="text-md font-semibold mt-6 mb-4">SECTION 1 - WHAT DO WE DO WITH YOUR INFORMATION?</h2>
+        <h2 className="text-md font-semibold mt-6 mb-4"> 1. WHAT DO WE DO WITH YOUR INFORMATION?</h2>
         <p className="text-sm font-normal ">
           When you make a purchase from our store, we collect personal information such as your name, address, and email address as part of the buying and selling process. Additionally, when you browse our store, we automatically receive your computer's IP address to help us understand more about your browser and operating system.
         </p>
@@ -41,7 +41,7 @@ const Privacy = () => {
           If you opt-in, we may send you emails about our store, new products, and other updates.
         </p>
 
-        <h2 className="text-md font-semibold mt-6 mb-4">SECTION 2 - CONSENT</h2>
+        <h2 className="text-md font-semibold mt-6 mb-4"> 2. CONSENT</h2>
         <h3 className="text-md font-semibold mt-4 mb-2">How do you get my consent?</h3>
         <p className="text-sm font-normal ">
           When you provide personal information to complete a transaction, verify your credit card, place an order, arrange a delivery, or return a purchase, we assume you consent to our collecting and using it for that specific purpose.
@@ -52,12 +52,12 @@ const Privacy = () => {
           If you change your mind after opting in, you may withdraw your consent for us to contact you or for the continued collection, use, or disclosure of your information at any time by contacting us at support@annapoornamithai.com.
         </p>
 
-        <h2 className="text-md font-semibold mt-6 mb-4">SECTION 3 - DISCLOSURE</h2>
+        <h2 className="text-md font-semibold mt-6 mb-4"> 3. DISCLOSURE</h2>
         <p className="text-sm font-normal ">
           We may disclose your personal information if we are required by law to do so or if you violate our Terms of Service.
         </p>
 
-        <h2 className="text-md font-semibold mt-6 mb-4">SECTION 4 – PAYMENT</h2>
+        <h2 className="text-md font-semibold mt-6 mb-4"> 4. PAYMENT</h2>
         <p className="text-sm font-normal ">
           We use Razorpay to process payments. Neither we nor Razorpay store your card details on their servers. All payment data is encrypted through the Payment Card Industry Data Security Standard (PCI-DSS) during processing. Your transaction data is only used as necessary to complete your purchase. After completion, your transaction details are not saved.
         </p>
@@ -68,7 +68,7 @@ const Privacy = () => {
           For more information, you may review Razorpay's terms and conditions at https://razorpay.com.
         </p>
 
-        <h2 className="text-md font-semibold mt-6 mb-4">SECTION 5 - THIRD-PARTY SERVICES</h2>
+        <h2 className="text-md font-semibold mt-6 mb-4"> 5. THIRD-PARTY SERVICES</h2>
         <p className="text-sm font-normal ">
           Generally, third-party providers used by us will collect, use, and disclose your information only to the extent necessary to perform the services they offer.
         </p>
@@ -86,22 +86,22 @@ const Privacy = () => {
           When you click on links on our store, they may direct you away from our site. We are not responsible for the privacy practices of other sites and encourage you to read their privacy statements.
         </p>
 
-        <h2 className="text-md font-semibold mt-6 mb-4">SECTION 6 - SECURITY</h2>
+        <h2 className="text-md font-semibold mt-6 mb-4"> 6. SECURITY</h2>
         <p className="text-sm font-normal ">
           To protect your personal information, we take reasonable precautions and follow industry best practices to make sure it is not inappropriately lost, misused, accessed, disclosed, altered or destroyed.
         </p>
 
-        <h2 className="text-md font-semibold mt-6 mb-4">SECTION 7 - COOKIES</h2>
+        <h2 className="text-md font-semibold mt-6 mb-4"> 7. COOKIES</h2>
         <p className="text-sm font-normal ">
           We use cookies to maintain session of your user. It is not used to personally identify you on other websites.
         </p>
 
-        <h2 className="text-md font-semibold mt-6 mb-4">SECTION 8 - AGE OF CONSENT</h2>
+        <h2 className="text-md font-semibold mt-6 mb-4"> 8. AGE OF CONSENT</h2>
         <p className="text-sm font-normal ">
           By using this site, you represent that you are at least the age of majority in your state or province of residence, or that you are the age of majority in your state or province of residence and you have given us your consent to allow any of your minor dependents to use this site.
         </p>
 
-        <h2 className="text-md font-semibold mt-6 mb-4">SECTION 9 - CHANGES TO THIS PRIVACY POLICY</h2>
+        <h2 className="text-md font-semibold mt-6 mb-4"> 9. CHANGES TO THIS PRIVACY POLICY</h2>
         <p className="text-sm font-normal ">
           We reserve the right to modify this privacy policy at any time, so please review it frequently. Changes and clarifications will take effect immediately upon their posting on the website. If we make material changes to this policy, we will notify you here that it has been updated, so that you are aware of what information we collect, how we use it, and under what circumstances, if any, we use and/or disclose it.
         </p>
