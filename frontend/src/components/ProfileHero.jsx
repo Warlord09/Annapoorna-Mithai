@@ -67,25 +67,25 @@ const ProfileHero = () => {
                 <li className="flex items-center">
                   <span className="mr-2">📍</span> Delivery Address
                 </li>
-                <li className="flex items-center">
+                <li className="flex items-center cursor-pointer" onClick={()=>navigate("/orders")}>
                   <span className="mr-2">📜</span> Order History
                 </li>
-                <li className="flex items-center">
-                  <span className="mr-2">🔔</span> Notifications{" "}
-                  <span className="ml-auto text-orange-500">ON</span>
+                <li className="flex items-center cursor-pointer" onClick={()=>navigate("/terms")}>
+                  <span className="mr-2"></span> Terms And Conditions{" "}
                 </li>
-                <li className="flex items-center">
-                  <span className="mr-2">🌐</span> Language{" "}
-                  <span className="ml-auto text-orange-500">English</span>
+                <li className="flex items-center cursor-pointer" onClick={()=>navigate("/privacy")}>
+                  <span className="mr-2"></span> Privacy Policy{" "}
+          
                 </li>
-                <li className="flex items-center">
-                  <span className="mr-2">❓</span> Help & Support
+                <li className="flex items-center cursor-pointer" onClick={()=>navigate("/shipping")}>
+                  <span className="mr-2"></span> Shipping and Delivery Policy
                 </li>
-                <li className="flex items-center">
+                
+                <li className="flex items-center cursor-pointer" onClick={()=>navigate("/refund")}>
+                  <span className="mr-2"></span> Refund Policy
+                </li>
+                <li className="flex items-center cursor-pointer">
                   <span className="mr-2">📞</span> Contact Us
-                </li>
-                <li className="flex items-center">
-                  <span className="mr-2">📄</span> T&C and Privacy policy
                 </li>
                 <li
                   className="flex items-center cursor-pointer"
