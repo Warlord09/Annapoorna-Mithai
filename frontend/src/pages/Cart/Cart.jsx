@@ -62,7 +62,7 @@ const CartPage = () => {
       console.log("Sending OTP to:", inputValue);
       const response = await axios.post(
         "https://annapoorna-backend.onrender.com/customers/send-otp",
-        { mobileNumber: inputValue },
+        { email: inputValue },
         { withCredentials: true }
       );
       console.log("OTP send response:", response.data);
