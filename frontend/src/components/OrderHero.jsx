@@ -28,6 +28,12 @@ const OrdersPage = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
   useEffect(() => {
     handleGetRequest();
   }, []);
@@ -44,13 +50,18 @@ const OrdersPage = () => {
 
   const OrderCard = ({ order, isOngoing }) => (
     <div className="bg-white rounded-lg p-4 mb-4 font-Nunito md:mx-10 border border-[#E6E6E6]">
-      <div className="flex justify-between items-center mb-2 ">
+      <div className="flex flex-col md:flex-row justify-between items-start gap-2 md:items-center mb-2 ">
         <div>
           <p className="font-bold text-[12px]">ORDER ID: {order.order_id}</p>
           <p className="text-[#909090] text-[10px]">
             Ordered on {new Date(order.created_at).toLocaleString()}
           </p>
         </div>
+        {order.preorder_date == null ? <></> : <span
+          className={`px-2 py-1 rounded-md text-[10px] font-extrabold bg-purple-100 border border-[#ff44ec] text-[#ff44ec]`}
+        >
+          Pre-order:{formatDate(order.preorder_date)}
+        </span>}
         <span
           className={`px-2 py-1 rounded-md text-[10px] font-extrabold ${
             order.delivery_status === "delivered"
@@ -62,6 +73,7 @@ const OrdersPage = () => {
         >
           {order.delivery_status.toUpperCase()}
         </span>
+        
       </div>
       <div className="mb-[24px]">
         <p className="text-xs text-[#909090] mb-1">DELIVERY ADDRESS</p>

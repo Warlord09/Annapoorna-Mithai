@@ -75,7 +75,7 @@ const FoodDisplay = ({ category, setCategory, searchTerm, setSearchTerm }) => {
       quantity,
       weight: selectedWeight,
       price: getWeightPrice() * quantity,
-      image: selectedItem.image,
+      image: selectedItem.image[0],
     };
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
     existingCart.push(cartItem);
@@ -155,7 +155,7 @@ const FoodDisplay = ({ category, setCategory, searchTerm, setSearchTerm }) => {
             <div className="overflow-y-auto scrollbar-hide h-full">
               <div className="flex flex-col md:flex-row gap-4">
                 <img
-                  src={selectedItem.image}
+                  src={selectedItem.image[0]}
                   alt={selectedItem.name}
                   className="w-full h-auto md:w-[320px] md:h-[282px] rounded-xl"
                 />
@@ -165,6 +165,7 @@ const FoodDisplay = ({ category, setCategory, searchTerm, setSearchTerm }) => {
                   </h2>
                   <p className="text-[#909090] text-[12px] font-Nunito font-[400px] mb-2">
                     {selectedItem.description}
+                    
                   </p>
                   <div
                     className="flex gap-1 cursor-pointer"
@@ -221,7 +222,7 @@ const FoodDisplay = ({ category, setCategory, searchTerm, setSearchTerm }) => {
                     <p className="text-[14px] font-bold text-[#606060] font-Nunito">
                       ₹{getWeightPrice() }{" "}
                       <p className="text-[14px] font-bold text-[#26A460] font-Nunito">
-                        With Offer ₹{selectedItem.offer }
+                        With Offer ₹{selectedItem.offer}
                       </p>
                     </p>
                     <div className="bg-[#F8F8F8] border border-[#E6E6E6] px-2 rounded-lg">

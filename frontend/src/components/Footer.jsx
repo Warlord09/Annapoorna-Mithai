@@ -12,7 +12,7 @@ const Footer = () => {
         
           <img
             onClick={()=>{navigate('/')}}
-            src="Logo2.svg"
+            src="Logo2.png"
             alt="Logo"
             className="w-16 h-16 cursor-pointer"
           />
@@ -26,7 +26,7 @@ const Footer = () => {
               />
             </a>
             <p className="opacity-80 text-[12px] md:text-[16px] font-Nunito font-semibold">
-              12418012002076 (Annapoorna Mithai)
+              12418012002076 (AnnapoornaMithai Sweets & Bakery)
             </p>
           </div>
         </div>
@@ -47,7 +47,7 @@ const Footer = () => {
       <div className="container mx-auto lg:flex flex-col md:flex-row justify-between items-end gap-8 my-8">
         <div className="flex flex-col gap-2">
           <h3 className="text-[12px] md:text-[24px] font-extrabold font-Nunito uppercase">
-            Annapoorna Mithai
+          AnnapoornaMithai Sweets & Bakery
           </h3>
           <a
             href="https://www.google.com/maps/place/Annapoorna+Mithai/@9.918965,78.0917162,17z/data=!3m1!4b1!4m6!3m5!1s0x3b00cf7166e1925b:0x95a169e6749dd039!8m2!3d9.9189597!4d78.0942911!16s%2Fg%2F11c1q9r_8m?entry=ttu&g_ep=EgoyMDI0MDkwNC4wIKXMDSoASAFQAw%3D%3D"
@@ -83,6 +83,14 @@ const Footer = () => {
               className="text-[12px] md:text-[16px] font-Nunito font-bold cursor-pointer"
             >
               Refund Policies
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <p
+              onClick={()=>{navigate('/shipping')}}
+              className="text-[12px] md:text-[16px] font-Nunito font-bold cursor-pointer"
+            >
+              Shipping & Delivery Policy
             </p>
           </div>
         </div>
@@ -128,7 +136,7 @@ const Footer = () => {
       <hr className="border-t border-gray-600 opacity-50 my-4" />
 
       <div className="text-center mt-8 text-sm opacity-80 font-Nunito text-[#E9DEC6]">
-        © 2024 All rights reserved by Annapoorna Mithai
+        © 2024 All rights reserved by AnnapoornaMithai Sweets & Bakery
       </div>
     </footer>
   );

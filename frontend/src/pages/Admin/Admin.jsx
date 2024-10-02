@@ -50,15 +50,26 @@ const Admin = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+  
+  // In your component:
+
   const OrderCard = ({ order }) => (
     <div className="flex flex-col lg:flex-row justify-between bg-white shadow-md rounded-lg p-4 mb-4 w-full">
       <div className="lg:w-3/4">
-        <h3 className="font-bold">Order ID: {order.order_id}</h3>
+        <h3 className="font-bold">Order ID: {order.order_id} </h3> 
+        <h3 className="font-bold">{order.preorder_date == null ? <> </> :<p className="text-green-400">{formatDate(order.preorder_date)}</p> }</h3>
         <p>Customer: {order.name}</p>
         <p>Mobile: {order.mobile}</p>
         <p>Address: {order.address}</p>
         <p>Total: ₹{order.total_price}</p>
         <p>Payment: {order.payment_status}</p>
+        
+        
         <div className="mt-4">
           <h4 className="font-semibold">Order Items:</h4>
           {order.order_items && order.order_items.length > 0 ? (

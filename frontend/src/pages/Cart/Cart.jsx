@@ -37,7 +37,7 @@ const CartPage = () => {
   const [buttonPressed, setButtonPressed] = useState(false);
   const [hasVerified, setHasVerified] = useState(false);
   const [showOrderPlaced, setShowOrderPlaced] = useState(false);
-  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [showAddressForm, setShowAddressForm] = useState(true);
   const navigate = useNavigate();
 
   const handleSendOtp = () => {
@@ -60,7 +60,8 @@ const CartPage = () => {
       console.log("Sending OTP to:", inputValue);
       const response = await axios.post(
         "http://localhost:8000/customers/send-otp",
-        { mobileNumber: inputValue },
+        { email: inputValue },
+
         { withCredentials: true }
       );
       console.log("OTP send response:", response.data);
@@ -168,6 +169,7 @@ const CartPage = () => {
                 address: address,
                 mobile: formData.mobile,
                 user_mobile: inputValue,
+                preorderDate: formData.preOrderDate,
               },
               {
                 withCredentials: true,
@@ -342,7 +344,7 @@ const CartPage = () => {
                 >
                   <div className="flex">
                     <img
-                      src={item.image}
+                      src={item.image[0]||item.image}
                       alt={item.name}
                       className="w-[56px] h-[56px] md:w-[56px] md:h-[56px] lg:w-[64px] lg:h-[64px] mr-4 rounded"
                     />

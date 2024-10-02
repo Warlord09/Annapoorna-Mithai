@@ -8,7 +8,7 @@ const AboutHero = () => {
         <div className="mx-8">
           <h1 className="mb-1 font-Nunito text-[14px] font-bold text-[#606060]">About</h1>
           <p className="mb-6 font-[400px] text-[14px] font-Nunito text-[#606060]">
-            Annapoorna Mithai is a Celebration hub for all Vegetarian and Sweet
+          AnnapoornaMithai Sweets & Bakery is a Celebration hub for all Vegetarian and Sweet
             lovers, a cosy ambiance with party halls and private dining to
             leisure with yummy food. Our prime goal is to give a consistent
             quality and a lip smacking taste. We also showcase unique return
