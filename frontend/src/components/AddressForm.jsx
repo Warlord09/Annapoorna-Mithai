@@ -116,12 +116,12 @@ const AddressForm = ({ onClose, setHasVerified }) => {
             <div className="mb-4">
               <label className="flex items-center">
                 <input
-                  type="checkbox"
+                  type="button"
                   checked={isVerifying}
                   onChange={handleVerifyAddress}
                   className="mr-2"
-                />
-                Verify Address Availability
+                />  
+                Check Address Availability
               </label>
             </div>
           )}
