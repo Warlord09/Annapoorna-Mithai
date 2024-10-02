@@ -37,7 +37,7 @@ exports.signupCustomer = async (req, res) => {
     };
 
     // Use mobile number as the document ID or a unique ID for the customer
-    const customerDocRef = db.collection("customers").doc(phone); // You can change this to a different unique identifier
+    const customerDocRef = db.collection("customers").doc(email); // You can change this to a different unique identifier
 
     // Set the customer document
     await customerDocRef.set(customerData);
@@ -56,12 +56,10 @@ exports.signupCustomer = async (req, res) => {
 };
 console.log();
 
-
 // Function to generate a 6-digit OTP
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
-
 
 exports.sendOTP = async (req, res) => {
   const { email } = req.body;
@@ -678,7 +676,7 @@ exports.verifyOrder = async (req, res) => {
 
       const mailOptions = {
         from: process.env.GMAIL_USER,
-        to: [email,process.env.GMAIL_USER],
+        to: [email, process.env.GMAIL_USER],
         subject: `Invoice - Order ${orderCount + 1}`,
         text: `Dear ${userName},\n\nPlease find attached the invoice for your recent purchase.\n\nThank you for shopping with us!`,
         attachments: [
