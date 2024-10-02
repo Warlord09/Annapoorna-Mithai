@@ -56,13 +56,6 @@ exports.signupCustomer = async (req, res) => {
 };
 console.log();
 
-const snsClient = new SNSClient({
-  region: "ap-south-1", // Replace with your AWS region
-  credentials: {
-    accessKeyId: "AKIA4AQ3UCBBFTHD6IFS", // Replace with your AWS Access Key ID
-    secretAccessKey: "sJDKt95pMtTBPH5LKX6jFWxOHI/8yi93EPpVw8Ux",
-  },
-});
 
 // Function to generate a 6-digit OTP
 const generateOTP = () => {
