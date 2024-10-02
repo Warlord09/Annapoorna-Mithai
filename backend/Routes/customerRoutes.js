@@ -12,7 +12,7 @@ router.route("/verify-otp").post(customerController.verifyOtp);
 router
   .route("/logout")
   .post(authenticate.authenticateCustomer, customerController.logoutCustomer);
-
+                            
 router
   .route("/orders")
   .post(authenticate.authenticateCustomer, customerController.createOrder)
