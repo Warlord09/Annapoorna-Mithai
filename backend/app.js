@@ -6,12 +6,13 @@ const Razorpay = require("razorpay");
 const bodyParser = require("body-parser");
 const customerRoutes = require("./Routes/customerRoutes");
 const menuRoutes = require("./Routes/menuRoutes");
-const db = require("./Modules/mysql");
+const { db } = require("./firebaseAdmin");
 const adminRoutes = require("./Routes/adminRoutes");
+const pincode = require("./Modules/validPincode");
 const path = require("path");
 const pdf = require("html-pdf");
-const authenticate = require("./Modules/auth");
-const nodemailer = require("nodemailer");
+const axios = require("axios");
+const featueRoutes = require("./Routes/featureRoutes");
 app.use(
   cors({
     origin: [
@@ -22,6 +23,7 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -33,5 +35,78 @@ app.set("views", path.join(__dirname, "views"));
 app.use("/menus", menuRoutes);
 app.use("/customers", customerRoutes);
 app.use("/admin", adminRoutes);
+app.use("/feature", featueRoutes);
+// app.post("/test", async (req, res) => {
+//   const { pincode } = req.body;
+//   try {
+//     const response = await axios.get(
+//       `https://api.postalpincode.in/pincode/${pincode}`
+//     );
+
+//     console.log(response);
+//     const postOffices = response.data[0]?.PostOffice || [];
+//     if (postOffices.length > 0) {
+//       const state = postOffices[0].State;
+//       const district = postOffices[0].District;
+//       console.log("hii");
+//       // Check if the state is Tamil Nadu, Karnataka, or Kerala
+//       if (!["Tamil Nadu", "Karnataka", "Kerala"].includes(state)) {
+//         const pincodeData = {
+//           pincode: pincode,
+//           state: state,
+//           district: district,
+//         };
+
+//         const pincodeRef = db.collection("pincodes").doc();
+//         await pincodeRef.set(pincodeData);
+
+//         return res
+//           .status(400)
+//           .json({ status: false, message: "Not deliverable" });
+//       }
+//     } else {
+//       return res
+//         .status(400)
+//         .json({ status: false, message: "Invalid PinCode" });
+//     }
+//     return res.status(200).json({ message: "success" });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error: "Error fetching pincode data" });
+//   }
+// });
+
+// app.post("/comparePrice", (req, res) => {
+//   const { minimumOrderValue, cartValue } = req.body;
+//   if (cartValue >= minimumOrderValue) {
+//     res.json({
+//       status: true,
+//       message: "Cart value meets the minimum order requirement.",
+//     });
+//   } else {
+//     res.json({
+//       status: false,
+//       message: "Cart value is below the minimum order requirement.",
+//     });
+//   }
+// });
+// app.post("/finalAmount", (req, res) => {
+//   const { totalAmount, taxPercentage, discountPercentage, deliveryFee } =
+//     req.body;
+
+//   const taxAmount = (totalAmount * taxPercentage) / 100;
+
+//   const discountAmount = (totalAmount * discountPercentage) / 100;
+
+//   const finalAmount = totalAmount + taxAmount - discountAmount + deliveryFee;
+
+//   res.json({
+//     totalAmount,
+//     taxAmount,
+//     discountAmount,
+//     deliveryFee,
+//     finalAmount,
+//   });
+// });
 
 module.exports = app;

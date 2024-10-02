@@ -1,5 +1,7 @@
 require("dotenv").config({ path: "../config.env" });
-const db = require("../Modules/mysql");
+// const db = require("../Modules/mysql");
+const { db } = require("../firebaseAdmin");
+const fs = require("fs");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const axios = require("axios");
@@ -11,127 +13,388 @@ const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const path = require("path");
 const twilio = require("twilio");
-
+const { SNSClient, PublishCommand } = require("@aws-sdk/client-sns");
 const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_KEY);
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
-
 exports.signupCustomer = async (req, res) => {
   try {
-    const { name, email, phone, password } = req.body;
+    const { name, email, mobile, password } = req.body;
+    console.log(req.body);
+
+    // Hash the password
     const hashPassword = await bcrypt.hash(password, 10);
-    const sql =
-      "INSERT INTO customers (name,phone,email,password) VALUES (?,?,?,?)";
-    const result = await new Promise((resolve, reject) => {
-      db.query(sql, [name, phone, email, hashPassword], (err, result) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(result);
-      });
-    });
+
+    // Create a new customer document in Firestore
+    const customerData = {
+      name,
+      email,
+      mobile,
+      password: hashPassword,
+      role: "customer",
+    };
+
+    // Use mobile number as the document ID or a unique ID for the customer
+    const customerDocRef = db.collection("customers").doc(phone); // You can change this to a different unique identifier
+
+    // Set the customer document
+    await customerDocRef.set(customerData);
+
     return res.status(201).json({
       status: true,
       type: "Sign Up",
       message: "Sign Up Successful",
     });
   } catch (error) {
+    console.error("Error inserting customer details:", error);
     return res
       .status(500)
       .json({ status: false, message: "Error inserting customer details" });
   }
 };
+console.log();
+
+const snsClient = new SNSClient({
+  region: "ap-south-1", // Replace with your AWS region
+  credentials: {
+    accessKeyId: "AKIA4AQ3UCBBFTHD6IFS", // Replace with your AWS Access Key ID
+    secretAccessKey: "sJDKt95pMtTBPH5LKX6jFWxOHI/8yi93EPpVw8Ux",
+  },
+});
+
+// Function to generate a 6-digit OTP
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// exports.sendOTP = async (req, res) => {
+//   const { mobileNumber } = req.body; // Expect phone number in the request body
+//   console.log(req.body);
+//   try {
+//     if (!mobileNumber) {
+//       return res.status(400).send({ error: "Phone number is required" });
+//     }
+
+//     // Generate the OTP
+//     const otp = generateOTP();
+
+// await db.collection("login_otp").doc(mobileNumber).set(
+//   {
+//     mobileNumber: mobileNumber,
+//     otp: otp,
+//   },
+//   { merge: true }
+// ); // Merge to update if the document already exists
+//     // Message to send via SNS
+//     const message = `Your OTP for Login for AnnaPoorna Mithai is: ${otp}`;
+//     // Send SMS via AWS SNS
+//     // const params = {
+//     //   Message: message,
+//     //   PhoneNumber: phoneNumber, // E.164 format, e.g., +11234567890
+//     // };
+//     // const data = await snsClient.send(new PublishCommand(params));
+//     // console.log("OTP sent successfully: ", data);
+//     await client.messages.create({
+//       body: `Your OTP is ${otp}`,
+//       from: "+15085072466",
+//       to: "+91" + mobileNumber,
+//     });
+//     res.status(200).send({ message: "OTP sent successfully", otp });
+//   } catch (err) {
+//     console.error("Error sending OTP: ", err);
+//     res.status(500).send({ error: "Failed to send OTP" });
+//   }
+// };
+
+// exports.sendOTP = async (req, res) => {
+//   const { mobileNumber } = req.body;
+//   try {
+//     const userDocRef = db.collection("customers").doc(mobileNumber);
+//     const userDoc = await userDocRef.get();
+
+//     if (!userDoc.exists) {
+//       return res.status(404).json({ status: false, message: "Register to continue" });
+//     }
+
+//     const response = await axios.get("https://api.msg91.com/api/v5/otp", {
+//       params: {
+//         template_id: process.env.MSG_TEMPLATE,
+//         mobile: "91" + mobileNumber,
+//         authkey: process.env.MSG_AUTH,
+//         otp_length: 6, // Specify that the OTP should be 6 digits
+//       },
+//     });
+
+//     console.log("OTP sent successfully:", response.data);
+//   } catch (error) {
+//     console.error(
+//       "Error sending OTP:",
+//       error.response ? error.response.data : error.message
+//     );
+//   }
+// };
+
+// exports.verifyOtp = async (req, res) => {
+//   console.log("hii");
+//   console.log(req.body);
+//   const { mobileNumber, otp } = req.body;
+
+//   try {
+//     // Fetch user and OTP data from Firestore
+//     console.log(`Searching OTP for mobileNumber: ${mobileNumber}`);
+//     const otpQuerySnapshot = await db
+//       .collection("login_otp")
+//       .where("mobileNumber", "==", mobileNumber)
+//       .get();
+
+//     // Log the number of documents found
+//     console.log(
+//       `Found ${otpQuerySnapshot.size} document(s) for mobileNumber ${mobileNumber}`
+//     );
+
+//     // Check if any OTP document exists
+//     console.log(otpQuerySnapshot.empty);
+//     if (otpQuerySnapshot.empty) {
+//       console.log(`No OTP found for mobileNumber: ${mobileNumber}`);
+//       return res.status(404).json({ status: false, message: "OTP not found" });
+//     }
+
+//     // Extract the first matching document (assuming one OTP per mobileNumber)
+//     const otpDoc = otpQuerySnapshot.docs[0];
+//     const otpData = otpDoc.data();
+
+//     console.log(`Fetched OTP from Firestore: ${otpData.otp}`);
+
+//     // Fetch user data
+//     const userDocRef = db.collection("customers").doc(mobileNumber);
+//     const userDoc = await userDocRef.get();
+
+//     if (!userDoc.exists) {
+//       return res.status(404).json({ status: false, message: "User not found" });
+//     }
+
+//     const userRecord = userDoc.data();
+//     console.log(userRecord);
+
+//     // Verify OTP
+//     if (otpData.otp !== otp) {
+//       console.log(`Invalid OTP. Expected: ${otpData.otp}, Received: ${otp}`);
+//       return res.status(400).json({ status: false, message: "Invalid OTP" });
+//     }
+
+//     // Generate JWT token
+//     const token = jwt.sign(
+//       {
+//         userName: userRecord.name,
+//         email: userRecord.email,
+//         mobile: userRecord.mobile,
+//         role: userRecord.role,
+//       },
+//       SECRET_KEY,
+//       { expiresIn: "1h" }
+//     );
+
+//     // Clean up OTP after successful login
+//     await otpDoc.ref.delete(); // Delete the OTP document from Firestore
+
+//     // Send token to the frontend
+//     return res.status(200).json({
+//       status: true,
+//       message: "Login Successful",
+//       token,
+//       user: {
+//         userName: userRecord.name,
+//         email: userRecord.email,
+//         mobile: userRecord.mobile,
+//         role: userRecord.role,
+//       },
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res
+//       .status(500)
+//       .json({ status: false, message: "Error validating OTP" });
+//   }
+// };
 
 exports.sendOTP = async (req, res) => {
-  console.log(req.body);
-  const { mobileNumber } = req.body;
-  const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
-
-  const expiresAt = new Date(Date.now() + 5 * 60 * 1000)
-    .toISOString()
-    .slice(0, 19)
-    .replace("T", " ");
-
+  const { email } = req.body;
+  console.log("otp");
   try {
-    const sql = `INSERT INTO login_otp (mobile, otp, expiresAt) 
-                 VALUES (?, ?, ?)  
-                 ON DUPLICATE KEY UPDATE 
-                 otp = VALUES(otp), expiresAt = VALUES(expiresAt)`;
+    const userDocRef = db.collection("customers").doc(email);
+    const userDoc = await userDocRef.get();
 
-    const result = await new Promise((resolve, reject) => {
-      db.query(sql, [mobileNumber, otp, expiresAt], (err, result) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(result);
-      });
+    if (!userDoc.exists) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Register to continue" });
+    }
+
+    // Generate a 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    await db.collection("login_otp").doc(email).set(
+      {
+        email: email,
+        otp: otp,
+      },
+      { merge: true }
+    );
+
+    // Configure the email transport
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
+      },
     });
 
-    await client.messages.create({
-      body: `Your OTP is ${otp}`,
-      from: "+15085072466",
-      to: "+91" + mobileNumber,
+    // Read the HTML template
+    const templatePath = path.join(__dirname, "otpTemplate.html");
+    let htmlTemplate = fs.readFileSync(templatePath, "utf-8");
+
+    // Replace the placeholder with the OTP
+    htmlTemplate = htmlTemplate.replace("{{OTP}}", otp);
+
+    // Send email
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: email, // Assuming the user document contains an email field
+      subject: "Your OTP for Login to Annapoorna Mithai",
+      html: htmlTemplate,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    console.log("OTP sent successfully via email");
+
+    res.json({
+      status: true,
+      message: "OTP sent successfully",
+      otp: otp, // Optionally return the OTP for testing purposes, but remove this in production
     });
-    return res.status(200).send("OTP sent successfully");
   } catch (error) {
-    console.log(error);
-    return res.status(500).send("Failed to send OTP");
+    console.error("Error sending OTP:", error.message);
+    res.status(500).json({ status: false, message: "Error sending OTP" });
   }
 };
 
+// exports.verifyOtp = async (req, res) => {
+//   console.log("Incoming request:", req.body);
+
+//   const { mobileNumber, otp } = req.body;
+
+//   try {
+
+//     const userDocRef = db.collection("customers").doc(mobileNumber);
+//     const userDoc = await userDocRef.get();
+
+//     // Check if the user exists
+//     if (!userDoc.exists) {
+//       return res.status(404).json({
+//         status: false,
+//         message: "User not found. Please register.",
+//       });
+//     }
+
+//     const response = await axios.get(
+//       "https://control.msg91.com/api/v5/otp/verify",
+//       {
+//         params: {
+//           otp: otp,
+//           mobile: "91" + mobileNumber,
+//           authkey: process.env.MSG_AUTH,
+//         },
+//       }
+//     );
+
+//     console.log("OTP verification successful:", response.data);
+
+//     const userRecord = userDoc.data();
+//     console.log(userRecord);
+
+//     const token = jwt.sign(
+//       {
+//         userName: userRecord.name,
+//         email: userRecord.email,
+//         mobile: userRecord.mobile,
+//         role: userRecord.role,
+//       },
+//       SECRET_KEY
+//       // { expiresIn: "1h" }
+//     );
+
+//     // Send success response to client
+//     return res.status(200).json({
+//       status: true,
+//       message: "Login Successful",
+//       token,
+//       user: {
+//         userName: userRecord.name,
+//         email: userRecord.email,
+//         mobile: userRecord.mobile,
+//         role: userRecord.role,
+//       },
+//     });
+//   } catch (error) {
+//     console.error(
+//       "Error verifying OTP:",
+//       error.response ? error.response.data : error.message
+//     );
+
+//     // Send error response to client
+//     return res.status(400).json({
+//       status: false,
+//       message: "OTP verification failed",
+//       error: error.response ? error.response.data : error.message,
+//     });
+//   }
+// };
+
 exports.verifyOtp = async (req, res) => {
-  console.log("hii");
-  console.log(req.body);
-  const { mobileNumber, otp } = req.body;
+  console.log("Incoming request:", req.body);
+
+  const { email, otp } = req.body;
 
   try {
-    const sql = `SELECT 
-          customers.name, 
-          customers.mobile, 
-          customers.email, 
-          customers.password, 
-          customers.role,
-          login_otp.otp, 
-          login_otp.expiresAt
-      FROM 
-          customers
-      JOIN 
-          login_otp 
-      ON 
-          customers.mobile = login_otp.mobile
-      WHERE 
-          login_otp.mobile = ?`;
+    // Fetch the user's document from Firestore
+    const userDocRef = db.collection("customers").doc(email);
+    const userDoc = await userDocRef.get();
 
-    const result = await new Promise((resolve, reject) => {
-      db.query(sql, [mobileNumber], (err, result) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(result);
+    // Check if the user exists
+    if (!userDoc.exists) {
+      return res.status(404).json({
+        status: false,
+        message: "User not found. Please register.",
       });
-    });
-
-    if (result.length === 0) {
-      return res.status(404).json({ status: false, message: "OTP not found" });
     }
 
-    const userRecord = result[0];
-    console.log(userRecord);
-    const currentDate = new Date(Date.now())
-      .toISOString()
-      .slice(0, 19)
-      .replace("T", " ");
+    const userRecord = userDoc.data();
 
-    if (new Date(userRecord.expiresAt) < currentDate) {
-      return res.status(400).json({ status: false, message: "OTP expired" });
+    const otpDocRef = db.collection("login_otp").doc(email);
+    const otpDoc = await otpDocRef.get();
+
+    if (!otpDoc.exists) {
+      return res.status(404).json({
+        status: false,
+        message: "OTP not found. Please request a new OTP.",
+      });
     }
 
-    if (userRecord.otp !== otp) {
-      return res.status(400).json({ status: false, message: "Invalid OTP" });
+    const otpRecord = otpDoc.data();
+
+    // Validate the OTP
+    if (otpRecord.otp != otp) {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid OTP. Please try again.",
+      });
     }
 
+    // OTP is valid, generate JWT token
     const token = jwt.sign(
       {
         userName: userRecord.name,
@@ -139,21 +402,13 @@ exports.verifyOtp = async (req, res) => {
         mobile: userRecord.mobile,
         role: userRecord.role,
       },
-      SECRET_KEY,
-      { expiresIn: "1h" } // Token will expire in 1 hour
+      SECRET_KEY
+      // { expiresIn: "1h" } // Optionally set token expiration
     );
 
-    // Clean up OTP after successful login
-    const deleteSQL = `DELETE FROM login_otp WHERE mobile = ?`;
-    const deleteResult = await new Promise((resolve, reject) => {
-      db.query(deleteSQL, [mobileNumber], (err, result) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(result);
-      });
-    });
-    // Send token to the frontend instead of setting it in a cookie
+    console.log("OTP verification successful:", userRecord);
+
+    // Send success response with JWT token
     return res.status(200).json({
       status: true,
       message: "Login Successful",
@@ -166,10 +421,14 @@ exports.verifyOtp = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
-    return res
-      .status(500)
-      .json({ status: false, message: "Error validating OTP" });
+    console.error("Error verifying OTP:", error.message);
+
+    // Send error response to client
+    return res.status(500).json({
+      status: false,
+      message: "OTP verification failed",
+      error: error.message,
+    });
   }
 };
 
@@ -178,7 +437,6 @@ exports.logoutCustomer = (req, res) => {
     httpOnly: true,
     secure: false,
   });
-
   return res
     .status(200)
     .json({ status: true, message: "Logged out successfully" });
@@ -395,7 +653,144 @@ const renderTemplate = (view, data) => {
   });
 };
 
-// const{ mobile, name, orderId, items, totalAmount, orderStatus}
+// exports.verifyOrder = async (req, res) => {
+//   const {
+//     orderId,
+//     paymentId,
+//     razorpayOrderId,
+//     razorpaySignature,
+//     orderItems,
+//     totalAmount,
+//     email,
+//     userName,
+//     address,
+//     mobile,
+//     gst,
+//     delivery,
+//     user_mobile,
+//     preorderDate,
+//   } = req.body;
+
+//   console.log("body in verify order route:", req.body);
+
+//   const generatedSignature = crypto
+//     .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//     .update(`${razorpayOrderId}|${paymentId}`)
+//     .digest("hex");
+
+//   const finalTotalAmount = Number(totalAmount) + Number(gst) + Number(delivery);
+
+//   if (generatedSignature === razorpaySignature) {
+//     try {
+//       console.log("Hash verified");
+
+//       const preOrderDate = preorderDate || null;
+//       const currentDate = new Date();
+
+//       // Prepare order data to insert into Firestore
+//       const orderData = {
+//         transaction_id: orderId,
+//         name: userName,
+//         mobile: mobile,
+//         address: address,
+//         order_items: orderItems, // Firestore automatically stores as array
+//         total_price: finalTotalAmount,
+//         user_mobile: user_mobile,
+//         created_at: currentDate,
+//         preorder_date: preOrderDate,
+//         payment_status: "paid",
+//         delivery_status: "processing",
+//       };
+
+//       // Insert order data into Firestore
+//       await db.collection("orders").add(orderData);
+//       console.log("Order successfully saved to Firestore");
+
+//       const userData = {
+//         mobile: user_mobile,
+//         userName: userName,
+//         orderId: orderId,
+//         items: orderItems,
+//         totalAmount: finalTotalAmount,
+//         paymentStatus: "Paid",
+//         deliveryStatus: "Order in Processing",
+//       };
+
+//       // Generate bill data
+//       const billData = {
+//         orderId: orderId,
+//         orderDate: new Date().toLocaleString(),
+//         preOrderDate: preOrderDate,
+//         paymentMethod: "Online",
+//         customerName: userName,
+//         customerAddress: address,
+//         customerMobile: mobile,
+//         customerEmail: email,
+//         orderItems: orderItems,
+//         itemTotal: totalAmount,
+//         gst: gst,
+//         delivery: delivery,
+//         finalAmount: finalTotalAmount,
+//       };
+
+//       console.log("bill data:", billData);
+
+//       // Render HTML for bill
+//       const html = await renderTemplate("bill", billData);
+
+//       // Generate PDF from HTML
+//       const pdfBuffer = await new Promise((resolve, reject) => {
+//         pdf
+//           .create(html, { format: "A4", border: "10mm" })
+//           .toBuffer((err, buffer) => {
+//             if (err) return reject(err);
+//             resolve(buffer);
+//           });
+//       });
+
+//       // Configure Nodemailer for email sending
+//       const transporter = nodemailer.createTransport({
+//         service: "gmail",
+//         auth: {
+//           user: "muhilkumaran@gmail.com",
+//           pass: "lkmvwumfkxzfblxe",
+//         },
+//       });
+
+//       const mailOptions = {
+//         from: "muhilkumaran@gmail.com",
+//         to: email,
+//         subject: `Invoice - Order ${orderId}`,
+//         text: `Dear ${userName},\n\nPlease find attached the invoice for your recent purchase.\n\nThank you for shopping with us!`,
+//         attachments: [
+//           {
+//             filename: `invoice-${orderId}.pdf`,
+//             content: pdfBuffer,
+//             contentType: "application/pdf",
+//           },
+//         ],
+//       };
+
+//       // Send email with the PDF attachment
+//       await new Promise((resolve, reject) => {
+//         transporter.sendMail(mailOptions, (error, info) => {
+//           if (error) return reject(error);
+//           resolve(info);
+//         });
+//       });
+
+//       // Send success response to client
+//       res
+//         .status(200)
+//         .json({ status: true, message: "Payment Successful and email sent" });
+//     } catch (error) {
+//       console.log("Error processing order:", error);
+//       res.status(500).json({ status: false, error: "Failed to process order" });
+//     }
+//   } else {
+//     res.status(400).json({ status: false, error: "Invalid Payment signature" });
+//   }
+// };
 
 exports.verifyOrder = async (req, res) => {
   const {
@@ -414,75 +809,65 @@ exports.verifyOrder = async (req, res) => {
     user_mobile,
     preorderDate,
   } = req.body;
-  console.log("body in verify order route");
-  console.log(req.body);
-  console.log("email in verify order Route");
-  console.log(email);
-  console.log("user in verify route");
-  const user = req.user;
-  console.log(user);
-  console.log(orderItems);
-  if (!preorderDate) preorderDate = null;
-  console.log("preorder date");
-  console.log(preorderDate);
+
+  console.log("body in verify order route:", req.body);
+
   const generatedSignature = crypto
     .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
     .update(`${razorpayOrderId}|${paymentId}`)
     .digest("hex");
+
   const finalTotalAmount = Number(totalAmount) + Number(gst) + Number(delivery);
+
   if (generatedSignature === razorpaySignature) {
     try {
-      console.log("hash verified");
-      console.log(user);
-      const currentDate = new Date(Date.now())
-        .toISOString()
-        .slice(0, 19)
-        .replace("T", " ");
-      const sql = `
-  INSERT INTO customer_orders
-  (transaction_id, name, mobile,address, order_items, total_price,user_mobile, created_at, preorder_date,payment_status, delivery_status)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      const result = await new Promise((resolve, reject) => {
-        db.query(
-          sql,
-          [
-            orderId,
-            userName,
-            mobile,
-            address,
-            JSON.stringify(orderItems), // Convert orderItems to JSON string
-            finalTotalAmount,
-            user_mobile,
-            currentDate,
-            preorderDate,
-            "paid",
-            "processing", // Make sure this value matches the expected data type
-          ],
-          (err, result) => {
-            if (err) {
-              return reject(err);
-            }
-            resolve(result);
-          }
-        );
-      });
+      console.log("Hash verified");
+
+      const preOrderDate = preorderDate || null;
+      const currentDate = new Date();
+
+      // Fetch the number of documents in the 'orders' collection
+      const orderCountSnapshot = await db.collection("orders").get();
+      const orderCount = orderCountSnapshot.size;
+
+      console.log("Total orders so far:", orderCount);
+
+      // Prepare order data to insert into Firestore
+      const orderData = {
+        order_id: orderCount + 1,
+        transaction_id: orderId,
+        name: userName,
+        mobile: mobile,
+        address: address,
+        order_items: orderItems, // Firestore automatically stores as array
+        total_price: finalTotalAmount,
+        user_mobile: user_mobile,
+        created_at: currentDate,
+        preorder_date: preOrderDate,
+        payment_status: "paid",
+        delivery_status: "processing",
+        // Assign the next order number
+      };
+
+      // Insert order data into Firestore
+      await db.collection("orders").add(orderData);
+      console.log("Order successfully saved to Firestore");
+
       const userData = {
-        mobile: user.mobile,
-        userName: user.userName,
-        orderId: "TEST123",
+        mobile: user_mobile,
+        userName: userName,
+        orderId: orderId,
         items: orderItems,
-        totalAmount: totalAmount,
+        totalAmount: finalTotalAmount,
         paymentStatus: "Paid",
         deliveryStatus: "Order in Processing",
       };
-      console.log("Before sending Aisensys");
-      console.log(userData.userName);
-      // sendWhatsAppOrderData(userData);
 
+      // Generate bill data
       const billData = {
-        orderId: orderId,
+        orderId: orderCount + 1,
         orderDate: new Date().toLocaleString(),
-        preorderDate,
+        preOrderDate: preOrderDate,
         paymentMethod: "Online",
         customerName: userName,
         customerAddress: address,
@@ -491,15 +876,16 @@ exports.verifyOrder = async (req, res) => {
         orderItems: orderItems,
         itemTotal: totalAmount,
         gst: gst,
-        delivery,
-        finalAmount: Number(totalAmount) + Number(delivery) + Number(gst),
+        delivery: delivery,
+        finalAmount: finalTotalAmount,
       };
-      console.log("bill data");
-      console.log(billData);
-      // Render the HTML using EJS with the passed data
+
+      console.log("bill data:", billData);
+
+      // Render HTML for bill
       const html = await renderTemplate("bill", billData);
 
-      // Generate the PDF using html-pdf
+      // Generate PDF from HTML
       const pdfBuffer = await new Promise((resolve, reject) => {
         pdf
           .create(html, { format: "A4", border: "10mm" })
@@ -509,29 +895,30 @@ exports.verifyOrder = async (req, res) => {
           });
       });
 
-      // Send email with the PDF attachment
+      // Configure Nodemailer for email sending
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "muhilkumaran@gmail.com",
-          pass: "lkmvwumfkxzfblxe",
+          user: process.env.GMAIL_USER,
+          pass: process.env.GMAIL_PASS,
         },
       });
 
       const mailOptions = {
-        from: "muhilkumaran@gmail.com",
-        to: email,
-        subject: `Invoice - Order ${orderId}`,
-        text: `Dear ${user.userName},\n\nPlease find attached the invoice for your recent purchase.\n\nThank you for shopping with us!`,
+        from: process.env.GMAIL_USER,
+        to: [email,process.env.GMAIL_USER],
+        subject: `Invoice - Order ${orderCount + 1}`,
+        text: `Dear ${userName},\n\nPlease find attached the invoice for your recent purchase.\n\nThank you for shopping with us!`,
         attachments: [
           {
-            filename: `invoice-${orderId}.pdf`,
+            filename: `invoice-${orderCount + 1}.pdf`,
             content: pdfBuffer,
             contentType: "application/pdf",
           },
         ],
       };
 
+      // Send email with the PDF attachment
       await new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions, (error, info) => {
           if (error) return reject(error);
@@ -539,7 +926,7 @@ exports.verifyOrder = async (req, res) => {
         });
       });
 
-      // Send a success response to the client
+      // Send success response to client
       res
         .status(200)
         .json({ status: true, message: "Payment Successful and email sent" });
@@ -560,8 +947,8 @@ exports.sendContactUs = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "muhilkumaran@gmail.com",
-        pass: "lkmvwumfkxzfblxe",
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
       },
     });
 
@@ -609,8 +996,8 @@ exports.sendContactUs = async (req, res) => {
     `;
 
     const mailOptions = {
-      from: "muhilkumaran@gmail.com",
-      to: "kumaranmuhil@gmail.com",
+      from: process.env.GMAIL_USER,
+      to: process.env.GMAIL_USER,
       subject: "Someone Tried To Contact You",
       html: htmlContent,
     };
@@ -691,31 +1078,72 @@ exports.webhook = async (req, res) => {
   }
 };
 
-//http://localhost:3000/get-orders?mobileNumber=1234567890
+// exports.getOrders = async (req, res) => {
+//   try {
+//     const { mobileNumber } = req.query;
+//     console.log("In get order");
+//     console.log(req.query);
+//     console.log(mobileNumber);
+//     if (!mobileNumber)
+//       return res.status(400).json({
+//         status: false,
+//         message: "mobileNumber is required to Fetch orders",
+//       });
+//     // const sql = "SELECT * FROM customer_orders WHERE user_mobile = ? LIMIT 4";
+//     const sql =
+//       "SELECT * FROM customer_orders WHERE user_mobile = ? ORDER BY created_at DESC";
+//     const result = await new Promise((resolve, reject) => {
+//       db.query(sql, [mobileNumber], (err, result) => {
+//         if (err) {
+//           return reject(err);
+//         }
+//         resolve(result);
+//       });
+//     });
+//     return res.status(200).json({ status: true, result: result });
+//   } catch (error) {
+//     console.log(error);
+//     return res
+//       .status(500)
+//       .json({ status: false, message: "Error fetching orders" });
+//   }
+// };
 
 exports.getOrders = async (req, res) => {
   try {
-    const { mobileNumber } = req.query;
+    const { email } = req.query;
     console.log("In get order");
     console.log(req.query);
-    console.log(mobileNumber);
-    if (!mobileNumber)
+    console.log(email);
+
+    // Check if mobileNumber is provided
+    if (!email) {
       return res.status(400).json({
         status: false,
-        message: "mobileNumber is required to Fetch orders",
+        message: "email is required to fetch orders",
       });
-    // const sql = "SELECT * FROM customer_orders WHERE user_mobile = ? LIMIT 4";
-    const sql =
-      "SELECT * FROM customer_orders WHERE user_mobile = ? ORDER BY created_at DESC";
-    const result = await new Promise((resolve, reject) => {
-      db.query(sql, [mobileNumber], (err, result) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(result);
-      });
-    });
-    return res.status(200).json({ status: true, result: result });
+    }
+
+    // Query Firestore to get orders by user_mobile, ordered by created_at (timestamp) in descending order
+    const ordersSnapshot = await db
+      .collection("orders")
+      .where("user_mobile", "==", email)
+      .orderBy("created_at", "desc")
+      .get();
+
+    // Check if there are no orders found
+    if (ordersSnapshot.empty) {
+      return res.status(200).json({ status: true, result: [] });
+    }
+
+    // Extract order data from snapshot
+    const orders = ordersSnapshot.docs.map((doc) => ({
+      id: doc.id, // Include the document ID
+      ...doc.data(),
+    }));
+
+    // Send the orders in the response
+    return res.status(200).json({ status: true, result: orders });
   } catch (error) {
     console.log(error);
     return res

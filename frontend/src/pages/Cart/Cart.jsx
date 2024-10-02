@@ -40,28 +40,26 @@ const CartPage = () => {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const navigate = useNavigate();
 
-
   const handleSendOtp = () => {
     setShowLogin(true);
     console.log(cartItems);
   };
-
 
   const handleMobileNumber = async (isResend = false) => {
     if (!isResend && inputValue.length !== 10) {
       setShowError(true);
       return;
     }
-  
+
     if (isResend) {
       setShowLogin(false);
       setShowOTPVerification(true);
     }
-  
+
     try {
       console.log("Sending OTP to:", inputValue);
       const response = await axios.post(
-        "https://annapoorna-backend.onrender.com/customers/send-otp",
+        "http://localhost:8000/customers/send-otp",
         { mobileNumber: inputValue },
         { withCredentials: true }
       );
@@ -112,7 +110,7 @@ const CartPage = () => {
       }
       const cart = localStorage.getItem("cart");
       const response = await axios.post(
-        "https://annapoorna-backend.onrender.com/customers/orders",
+        "http://localhost:8000/customers/orders",
         {
           totalPrice: total.toFixed(2),
           currency: "INR",
@@ -155,7 +153,7 @@ const CartPage = () => {
             console.log(delivery);
             setIsLoading(true);
             const paymentResponse = await axios.post(
-              "https://annapoorna-backend.onrender.com/customers/verify-order",
+              "http://localhost:8000/customers/verify-order",
               {
                 orderId: order.id,
                 paymentId: response.razorpay_payment_id,
@@ -329,8 +327,12 @@ const CartPage = () => {
                   </p> */}
                 </div>
                 <div>
-                <h1 className="font-Nunito font-semibold text-[12px] px-3 pt-1 text-[#909090]">{formData.addressLine1}</h1>
-                <h1 className="font-Nunito font-semibold text-[12px] px-3 pb-3 text-[#909090]">{formData.landmark}-{formData.pincode}</h1>
+                  <h1 className="font-Nunito font-semibold text-[12px] px-3 pt-1 text-[#909090]">
+                    {formData.addressLine1}
+                  </h1>
+                  <h1 className="font-Nunito font-semibold text-[12px] px-3 pb-3 text-[#909090]">
+                    {formData.landmark}-{formData.pincode}
+                  </h1>
                 </div>
               </div>
               {cartItems.map((item, index) => (
@@ -472,13 +474,13 @@ const CartPage = () => {
           <div className="flex flex-col gap-5 justify-center items-center h-64">
             <p className="text-xl font-bold">Your cart is empty.</p>
             <button
-            className="px-4 py-2 rounded-lg bg-[#d7c59e] text-[#6B4B34]"
-            onClick={() => {
-              navigate("/shop");
-            }}
-          >
-            SHOP NOW
-          </button>
+              className="px-4 py-2 rounded-lg bg-[#d7c59e] text-[#6B4B34]"
+              onClick={() => {
+                navigate("/shop");
+              }}
+            >
+              SHOP NOW
+            </button>
           </div>
         )}
       </div>
@@ -501,7 +503,7 @@ const CartPage = () => {
             setLoggedIn={setLoggedIn}
             hasVerified={hasVerified}
             setHasVerified={setHasVerified}
-            handleMobileNumber={()=>handleMobileNumber(true)}
+            handleMobileNumber={() => handleMobileNumber(true)}
           />
         </div>
       )}
@@ -509,7 +511,6 @@ const CartPage = () => {
       {hasVerified && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <VerificationSuccess
-        
             setShowOTPVerification={setShowOTPVerification}
             setShowAddressForm={setShowAddressForm}
           ></VerificationSuccess>
@@ -518,7 +519,10 @@ const CartPage = () => {
 
       {showAddressForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <AddressForm onClose={() => setShowAddressForm(false)} setHasVerified={setHasVerified} />
+          <AddressForm
+            onClose={() => setShowAddressForm(false)}
+            setHasVerified={setHasVerified}
+          />
         </div>
       )}
 
