@@ -116,7 +116,7 @@ const AddressForm = ({ onClose, setHasVerified }) => {
             <div className="mb-4">
               <label className="flex items-center">
                 <input
-                  type="button"
+                  type="checkbox"
                   checked={isVerifying}
                   onChange={handleVerifyAddress}
                   className="mr-2"

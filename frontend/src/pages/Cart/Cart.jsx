@@ -37,7 +37,7 @@ const CartPage = () => {
   const [buttonPressed, setButtonPressed] = useState(false);
   const [hasVerified, setHasVerified] = useState(false);
   const [showOrderPlaced, setShowOrderPlaced] = useState(false);
-  const [showAddressForm, setShowAddressForm] = useState(true);
+  const [showAddressForm, setShowAddressForm] = useState(false);
   const navigate = useNavigate();
 
 
@@ -198,6 +198,7 @@ const CartPage = () => {
           } finally {
             setIsLoading(false); // Stop loading regardless of outcome
             setButtonPressed(false);
+            setLoggedIn(false);
           }
         },
         prefill: {
