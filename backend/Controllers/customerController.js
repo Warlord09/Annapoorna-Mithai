@@ -13,7 +13,7 @@ const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const path = require("path");
 const twilio = require("twilio");
-const { SNSClient, PublishCommand } = require("@aws-sdk/client-sns");
+// const { SNSClient, PublishCommand } = require("@aws-sdk/client-sns");
 const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_KEY);
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
