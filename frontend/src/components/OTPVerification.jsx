@@ -46,7 +46,7 @@ const OTPVerification = ({
 
     try {
       const response = await axios.post(
-        "https://annapoorna-backend.onrender.com/customers/verify-otp",
+        "http://localhost:8000/customers/verify-otp",
         {
           mobileNumber: inputValue,
           otp: otpString,

@@ -1,7 +1,7 @@
 require("dotenv").config({ path: "../config.env" });
 
-const db = require("../Modules/mysql");
-
+// const db = require("../Modules/mysql");
+const db = require("../firebaseAdmin");
 //retrive menu in db
 exports.getMenu = async (req, res, next) => {
   try {
