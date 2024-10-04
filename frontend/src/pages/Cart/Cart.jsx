@@ -59,7 +59,7 @@ const CartPage = () => {
     try {
       console.log("Sending OTP to:", inputValue);
       const response = await axios.post(
-        "http://localhost:8000/customers/send-otp",
+        "https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/customers/send-otp",
         { email: inputValue },
 
         { withCredentials: true }
@@ -111,7 +111,7 @@ const CartPage = () => {
       }
       const cart = localStorage.getItem("cart");
       const response = await axios.post(
-        "http://localhost:8000/customers/orders",
+        "https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/customers/orders",
         {
           totalPrice: total.toFixed(2),
           currency: "INR",
@@ -154,7 +154,7 @@ const CartPage = () => {
             console.log(delivery);
             setIsLoading(true);
             const paymentResponse = await axios.post(
-              "http://localhost:8000/customers/verify-order",
+              "https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/customers/verify-order",
               {
                 orderId: order.id,
                 paymentId: response.razorpay_payment_id,

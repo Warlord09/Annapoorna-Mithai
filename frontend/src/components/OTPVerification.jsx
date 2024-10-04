@@ -46,9 +46,9 @@ const OTPVerification = ({
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/customers/verify-otp",
+        "https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/customers/verify-otp",
         {
-          mobileNumber: inputValue,
+          email: inputValue,
           otp: otpString,
         },
         { withCredentials: true }

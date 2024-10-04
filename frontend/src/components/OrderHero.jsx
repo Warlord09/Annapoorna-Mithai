@@ -12,7 +12,7 @@ const OrdersPage = () => {
     try {
       const authToken = localStorage.getItem("authToken");
       const response = await axios.get(
-        `http://localhost:8000/customers/orders?mobileNumber=${inputValue}`,
+        `https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/customers/orders?email=${inputValue}`,
         {
           withCredentials: true,
           headers: {

@@ -15,7 +15,7 @@ const ContactForm = () => {
 
     try {
       const response = await axios.post(
-        "https://annapoorna-backend.onrender.com/customers/contact-us",
+        "https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/customers/contact-us",
         {
           name,
           mobile,
