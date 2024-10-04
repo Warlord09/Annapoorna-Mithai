@@ -40,7 +40,7 @@ const AddressForm = ({ onClose, setHasVerified }) => {
     setIsVerifying(true);
     try {
       const response = await axios.post('https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/feature/checkPincode',{
-        pincode : pincode
+        pincode : formData.pincode
       });
       setIsAddressAvailable(response.data.status);
     } catch (error) {
