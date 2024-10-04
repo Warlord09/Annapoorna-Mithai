@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import Loader from './Loader/Loader';
+import VerificationSuccess from './VerificationSuccess';
 
 const SignupForm = ({ onClose }) => {
-
-    
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,25 +18,33 @@ const SignupForm = ({ onClose }) => {
     setFormData(prevData => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleCreateAccount = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords don't match");
       return;
     }
-    // Here you would typically send the form data to your backend
-    console.log('Form submitted:', formData);
-    onClose();
+    setIsLoading(true);
+    try {
+      const response = await axios.post("https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/customers/signup", {
+        name: formData.name,
+        email: formData.email,
+        mobile: formData.mobile,
+        password: formData.password
+      });
+      if (response.data.status) {
+       
+        onClose();
+      } else {
+        alert("Failed");
+      }
+    } catch (error) {
+      console.error("Error creating account:", error);
+      alert("An error occurred while creating your account");
+    } finally {
+      setIsLoading(false);
+    }
   };
-  const handleCreateAccount = async() =>{
-    const response = await axios.post("https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/customers/signup",{
-        name:formData.name,
-        email:formData.email,
-        mobile:formData.mobile,
-        password:formData.password
-    });
-    response.data.status ? alert("Success") : alert("Failed");
-}
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -43,12 +53,12 @@ const SignupForm = ({ onClose }) => {
           <img src="closeoverlay.svg" alt="Close" />
         </button>
         <h2 className="text-xl font-bold mb-4 flex items-center">
-         Create Account
+          Create Account
         </h2>
         <p className="text-sm text-gray-600 mb-6">
           Please enter the required details to create your account
         </p>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleCreateAccount}>
           <div className="mb-4">
             <h3 className="text-sm font-semibold text-[#FAAF40] mb-2">PERSONAL DETAILS*</h3>
             <input
@@ -109,9 +119,9 @@ const SignupForm = ({ onClose }) => {
           <button
             type="submit"
             className="w-full bg-[#332D21] text-white font-bold py-3 px-4 rounded-lg"
-            onClick={handleCreateAccount}
+            disabled={isLoading}
           >
-            Create Account
+            {isLoading ? <Loader /> : "Create Account"}
           </button>
         </form>
       </div>

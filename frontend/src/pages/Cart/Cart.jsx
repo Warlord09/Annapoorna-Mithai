@@ -38,6 +38,7 @@ const CartPage = () => {
   const [hasVerified, setHasVerified] = useState(false);
   const [showOrderPlaced, setShowOrderPlaced] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
+  const [showError,setShowError] = useState(false);
   const navigate = useNavigate();
 
   const handleSendOtp = () => {
@@ -46,10 +47,10 @@ const CartPage = () => {
   };
 
   const handleMobileNumber = async (isResend = false) => {
-    if (!isResend && inputValue.length !== 10) {
-      setShowError(true);
-      return;
-    }
+    // if (!isResend && inputValue.length !== 10) {
+    //   setShowError(true);
+    //   return;
+    // }
 
     if (isResend) {
       setShowLogin(false);
