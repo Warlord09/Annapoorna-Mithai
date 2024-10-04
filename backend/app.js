@@ -32,10 +32,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-app.use("/menus", menuRoutes);
-app.use("/customers", customerRoutes);
-app.use("/admin", adminRoutes);
-app.use("/feature", featueRoutes);
+app.use("api/menus", menuRoutes);
+app.use("api/customers", customerRoutes);
+app.use("api/admin", adminRoutes);
+app.use("api/feature", featueRoutes);
 // app.post("/test", async (req, res) => {
 //   const { pincode } = req.body;
 //   try {
