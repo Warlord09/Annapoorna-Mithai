@@ -1,6 +1,6 @@
-// const db = require("../Modules/mysql");
+const db = require("../Modules/mysql");
 const bcrypt = require("bcrypt");
-const { db } = require("../firebaseAdmin");
+// const { db } = require("../firebaseAdmin");
 // exports.signUpAdmin = async (req, res, next) => {
 //   try {
 //     const { name, email, phone, password } = req.body;
@@ -277,42 +277,19 @@ exports.manageOrder = async (req, res) => {
   try {
     const { order_id, delivery_status } = req.body;
 
-    if (!order_id || !delivery_status) {
-      return res.status(400).json({
-        status: false,
-        error: "Order ID and delivery status are required",
+    const sql = `UPDATE customer_orders SET delivery_status = ? WHERE order_id = ?`;
+    const updateResult = await new Promise((resolve, reject) => {
+      db.query(sql, [delivery_status, order_id], (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
       });
-    }
-
-    // Firestore query to find the order document by `order_id`
-    const orderRef = db.collection("orders").where("order_id", "==", order_id);
-    const snapshot = await orderRef.get();
-
-    if (snapshot.empty) {
-      return res.status(404).json({
-        status: false,
-        message: "Order not found",
-      });
-    }
-
-    // Since there is only one order, we can update it directly
-    const orderDoc = snapshot.docs[0];
-    const orderDocRef = db.collection("orders").doc(orderDoc.id);
-
-    // Update the delivery_status of the found order
-    await orderDocRef.update({ delivery_status });
-
-    // Retrieve the updated order data
-    const updatedOrderDoc = await orderDocRef.get();
-    const updatedOrderData = updatedOrderDoc.data();
-
-    // Optionally, send the delivery status (uncomment if needed)
-    // sendDeliveryStatus(updatedOrderData);
-
+    });
     return res.status(200).json({
       status: true,
       message: "Order status updated successfully",
-      orderData: updatedOrderData, // Return the updated order data
+      orderData: updateResult, // Return the updated order data
     });
   } catch (error) {
     console.error("Error updating order status:", error);
@@ -327,30 +304,33 @@ exports.getOrdersByDeliveryStatus = async (req, res) => {
 
   try {
     // Query Firestore for orders with the given delivery status
-    const ordersSnapshot = await db
-      .collection("orders")
-      .where("delivery_status", "==", deliveryStatus)
-      .get();
+    // const ordersSnapshot = await db
+    //   .collection("orders")
+    //   .where("delivery_status", "==", deliveryStatus)
+    //   .get();
 
-    // Check if any orders were found
-    if (ordersSnapshot.empty) {
-      return res.status(404).json({
-        status: false,
-        message: "No orders found with the given delivery status",
+    // // Check if any orders were found
+    // if (ordersSnapshot.empty) {
+    //   return res.status(404).json({
+    //     status: false,
+    //     message: "No orders found with the given delivery status",
+    //   });
+    // }
+    const sql = "SELECT * FROM customer_orders WHERE delivery_status = ?"
+    const result = await new Promise((resolve, reject) => {
+      db.query(sql, [deliveryStatus], (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
       });
-    }
-
-    // Map the documents to JSON format
-    const orders = ordersSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    });
 
     // Return the fetched orders
     return res.status(200).json({
       status: true,
-      message: "Orders retrieved successfully",
-      result: orders,
+      message: "Orders by status retrieved successfully",
+      result: result,
     });
   } catch (error) {
     console.error("Error retrieving orders:", error);

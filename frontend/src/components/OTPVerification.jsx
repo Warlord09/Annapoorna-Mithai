@@ -10,13 +10,13 @@ const OTPVerification = ({
   setLoggedIn,
   hasVerified,
   setHasVerified,
-  handleMobileNumber
+  handleMobileNumber,
 }) => {
   const { inputValue } = useContext(CartContext);
   const [otp, setOTP] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
-  
+
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -31,8 +31,6 @@ const OTPVerification = ({
     }
     return () => clearInterval(interval);
   }, [timer]);
-
-  
 
   const handleOtp = async () => {
     const otpString = otp.join("");
@@ -102,17 +100,14 @@ const OTPVerification = ({
     }
   };
 
-
-
   const handleResendOTP = () => {
     console.log("Resending OTP");
     setTimer(60);
     setCanResend(false);
-    setError(""); 
+    setError("");
     handleMobileNumber();
   };
 
- 
   return (
     <div className="relative w-[400px] h-auto bg-white rounded-xl p-10 shadow-lg">
       <img

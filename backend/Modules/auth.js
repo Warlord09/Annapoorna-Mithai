@@ -22,6 +22,7 @@ exports.authenticateAdmin = (req, res, next) => {
     next();
   });
 };
+
 // exports.authenticateCustomer = (req, res, next) => {
 //   console.log("Auth middle ware");
 //   console.log(req.cookies);
@@ -30,7 +31,6 @@ exports.authenticateAdmin = (req, res, next) => {
 //   if (!token) {
 //     return res.status(401).json({ message: "Login to view the order" });
 //   }
-
 //   jwt.verify(token, SECRET_KEY, (err, user) => {
 //     if (err) {
 //       return res.status(403).json({ message: "Invalid token" });
@@ -48,7 +48,6 @@ exports.authenticateCustomer = (req, res, next) => {
   if (!authHeader) {
     return res.status(401).json({ message: "Login to view the order" });
   }
-
   const token = authHeader.split(" ")[1]; // Extract the token
   if (!token) {
     return res.status(401).json({ message: "Login to view the order" });
@@ -60,12 +59,6 @@ exports.authenticateCustomer = (req, res, next) => {
     }
     req.user = user; // Attach user data to the request object
     console.log("from middle ware");
-    console.log(user);
-    if (user.role !== "customer") {
-      return res
-        .status(403)
-        .json({ message: "Access denied. Customers only." });
-    }
     next();
   });
 };

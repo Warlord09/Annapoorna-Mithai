@@ -46,6 +46,16 @@ const SignupForm = ({ onClose }) => {
     }
   };
 
+  const handleCreateAccount = async() =>{
+    const response = await axios.post("https:www.annapoornamithai.com/customers/signup",{
+        name,
+        email,
+        mobile,
+        password
+    });
+    response.data.status ? alert("Success") : alert("Failed");
+}
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded-xl p-8 w-[400px] relative max-h-[90vh] overflow-y-auto">

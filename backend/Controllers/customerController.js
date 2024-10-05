@@ -1,6 +1,5 @@
 require("dotenv").config({ path: "../config.env" });
-// const db = require("../Modules/mysql");
-const { db } = require("../firebaseAdmin");
+const db = require("../Modules/mysql");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -12,9 +11,7 @@ const pdf = require("html-pdf");
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const path = require("path");
-const twilio = require("twilio");
-// const { SNSClient, PublishCommand } = require("@aws-sdk/client-sns");
-const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_KEY);
+
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -22,26 +19,17 @@ const razorpay = new Razorpay({
 
 exports.signupCustomer = async (req, res) => {
   try {
-    const { name, email, mobile, password } = req.body;
-    console.log(req.body);
-
-    // Hash the password
+    const { name, email, phone, password } = req.body;
     const hashPassword = await bcrypt.hash(password, 10);
-
-    // Create a new customer document in Firestore
-    const customerData = {
-      name,
-      email,
-      mobile,
-      password: hashPassword,
-      role: "customer",
-    };
-
-    // Use mobile number as the document ID or a unique ID for the customer
-    const customerDocRef = db.collection("customers").doc(email); // You can change this to a different unique identifier
-
-    // Set the customer document
-    await customerDocRef.set(customerData);
+    const sql = "INSERT INTO customers (name,phone,email,password) VALUES (?,?,?,?)";
+    const result = await new Promise((resolve, reject) => {
+      db.query(sql, [name, phone, email, hashPassword], (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
+      });
+    });
 
     return res.status(201).json({
       status: true,
@@ -49,14 +37,11 @@ exports.signupCustomer = async (req, res) => {
       message: "Sign Up Successful",
     });
   } catch (error) {
-    console.error("Error inserting customer details:", error);
     return res
       .status(500)
       .json({ status: false, message: "Error inserting customer details" });
   }
 };
-console.log();
-
 // Function to generate a 6-digit OTP
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -64,28 +49,21 @@ const generateOTP = () => {
 
 exports.sendOTP = async (req, res) => {
   const { email } = req.body;
-  console.log("otp");
+  const otp = generateOTP();
+  console.log(otp);
   try {
-    const userDocRef = db.collection("customers").doc(email);
-    const userDoc = await userDocRef.get();
-
-    if (!userDoc.exists) {
-      return res
-        .status(404)
-        .json({ status: false, message: "Register to continue" });
-    }
-
-    // Generate a 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    await db.collection("login_otp").doc(email).set(
-      {
-        email: email,
-        otp: otp,
-      },
-      { merge: true }
-    );
-
+    const sql = `INSERT INTO login_otp (email, otp) 
+                 VALUES (?, ?)  
+                 ON DUPLICATE KEY UPDATE 
+                 otp = VALUES(otp)`;
+    const result = await new Promise((resolve, reject) => {
+      db.query(sql, [email, otp], (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
+      });
+    });
     // Configure the email transport
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -132,37 +110,40 @@ exports.verifyOtp = async (req, res) => {
 
   try {
     // Fetch the user's document from Firestore
-    const userDocRef = db.collection("customers").doc(email);
-    const userDoc = await userDocRef.get();
+    const sql = `SELECT 
+          customers.name, 
+          customers.mobile, 
+          customers.email, 
+          customers.password, 
+          login_otp.otp, 
+          login_otp.expiresAt
+      FROM 
+          customers
+      JOIN 
+          login_otp 
+      ON 
+          customers.mobile = login_otp.mobile
+      WHERE 
+          login_otp.mobile = ?`;
 
-    // Check if the user exists
-    if (!userDoc.exists) {
-      return res.status(404).json({
-        status: false,
-        message: "User not found. Please register.",
+    const result = await new Promise((resolve, reject) => {
+      db.query(sql, [mobileNumber], (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
       });
+    });
+
+    if (result.length === 0) {
+      return res.status(404).json({ status: false, message: "OTP not found" });
     }
 
-    const userRecord = userDoc.data();
-
-    const otpDocRef = db.collection("login_otp").doc(email);
-    const otpDoc = await otpDocRef.get();
-
-    if (!otpDoc.exists) {
-      return res.status(404).json({
-        status: false,
-        message: "OTP not found. Please request a new OTP.",
-      });
-    }
-
-    const otpRecord = otpDoc.data();
+    const userRecord = result[0];
 
     // Validate the OTP
-    if (otpRecord.otp != otp) {
-      return res.status(400).json({
-        status: false,
-        message: "Invalid OTP. Please try again.",
-      });
+    if (userRecord.otp !== otp) {
+      return res.status(400).json({ status: false, message: "Invalid OTP" });
     }
 
     // OTP is valid, generate JWT token
@@ -171,11 +152,20 @@ exports.verifyOtp = async (req, res) => {
         userName: userRecord.name,
         email: userRecord.email,
         mobile: userRecord.mobile,
-        role: userRecord.role,
       },
       SECRET_KEY
       // { expiresIn: "1h" } // Optionally set token expiration
     );
+
+    const deleteSQL = `DELETE FROM login_otp WHERE mobile = ?`;
+    const deleteResult = await new Promise((resolve, reject) => {
+      db.query(deleteSQL, [mobileNumber], (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
+      });
+    });
 
     console.log("OTP verification successful:", userRecord);
 
@@ -188,7 +178,6 @@ exports.verifyOtp = async (req, res) => {
         userName: userRecord.name,
         email: userRecord.email,
         mobile: userRecord.mobile,
-        role: userRecord.role,
       },
     });
   } catch (error) {
@@ -393,10 +382,11 @@ exports.createOrder = async (req, res) => {
       .json({ status: false, message: "All Details are Needed" });
 
   const options = {
-    amount: totalPrice * 100,
+    amount: Number(totalPrice)*100,
     currency: "INR",
     receipt: `receipt_${Date.now()}`,
   };
+
   try {
     const order = await razorpay.orders.create(options);
     if (!order)
@@ -598,46 +588,68 @@ exports.verifyOrder = async (req, res) => {
       const currentDate = new Date();
 
       // Fetch the number of documents in the 'orders' collection
-      const orderCountSnapshot = await db.collection("orders").get();
-      const orderCount = orderCountSnapshot.size;
-
-      console.log("Total orders so far:", orderCount);
+      const sql =
+        "INSERT INTO customer_orders (transaction_id, name, mobile, address,order_items,total_price,created_at,preorder_date,payment_status,delivery_status,user_mobile) VALUES (?,?,?,?)";
+      const result = await new Promise((resolve, reject) => {
+        db.query(
+          sql,
+          [
+            orderId,
+            userName,
+            mobile,
+            address,
+            orderItems,
+            finalTotalAmount,
+            currentDate,
+            preOrderDate,
+            "paid",
+            "processing",
+            user_mobile,
+          ],
+          (err, result) => {
+            if (err) {
+              return reject(err);
+            }
+            resolve(result);
+          }
+        );
+      });
 
       // Prepare order data to insert into Firestore
-      const orderData = {
-        order_id: orderCount + 1,
-        transaction_id: orderId,
-        name: userName,
-        mobile: mobile,
-        address: address,
-        order_items: orderItems, // Firestore automatically stores as array
-        total_price: finalTotalAmount,
-        user_mobile: user_mobile,
-        created_at: currentDate,
-        preorder_date: preOrderDate,
-        payment_status: "paid",
-        delivery_status: "processing",
-        // Assign the next order number
-      };
-
-      // Insert order data into Firestore
-      await db.collection("orders").add(orderData);
-      console.log("Order successfully saved to Firestore");
-
-      const userData = {
-        mobile: user_mobile,
-        userName: userName,
-        orderId: orderId,
-        items: orderItems,
-        totalAmount: finalTotalAmount,
-        paymentStatus: "Paid",
-        deliveryStatus: "Order in Processing",
-      };
+      // const orderData = {
+      //   order_id: orderCount + 1,
+      //   transaction_id: orderId,
+      //   name: userName,
+      //   mobile: mobile,
+      //   address: address,
+      //   order_items: orderItems, // Firestore automatically stores as array
+      //   total_price: finalTotalAmount,
+      //   user_mobile: user_mobile,
+      //   created_at: currentDate,
+      //   preorder_date: preOrderDate,
+      //   payment_status: "paid",
+      //   delivery_status: "processing",
+      //   // Assign the next order number
+      // };
 
       // Generate bill data
+
+      const sqlId = `SELECT order_id FROM customer_orders WHERE transaction_id = ?`;
+
+      const resultId = await new Promise((resolve, reject) => {
+        db.query(sqlId, [orderId], (err, result) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(result);
+        });
+      });
+
+      const order_id = resultId[0].order_id;
+
       const billData = {
-        orderId: orderCount + 1,
-        orderDate: new Date().toLocaleString(),
+        orderId: order_id,
+        orderDate: currentDate,
         preOrderDate: preOrderDate,
         paymentMethod: "Online",
         customerName: userName,
@@ -678,11 +690,11 @@ exports.verifyOrder = async (req, res) => {
       const mailOptions = {
         from: process.env.GMAIL_USER,
         to: [email, process.env.GMAIL_USER],
-        subject: `Invoice - Order ${orderCount + 1}`,
+        subject: `Invoice - Order ${resultId}`,
         text: `Dear ${userName},\n\nPlease find attached the invoice for your recent purchase.\n\nThank you for shopping with us!`,
         attachments: [
           {
-            filename: `invoice-${orderCount + 1}.pdf`,
+            filename: `invoice-${resultId}.pdf`,
             content: pdfBuffer,
             contentType: "application/pdf",
           },
@@ -895,26 +907,19 @@ exports.getOrders = async (req, res) => {
       });
     }
 
-    // Query Firestore to get orders by user_mobile, ordered by created_at (timestamp) in descending order
-    const ordersSnapshot = await db
-      .collection("orders")
-      .where("user_mobile", "==", email)
-      .orderBy("created_at", "desc")
-      .get();
-
+    const sql = `SELECT * FROM customers WHERE  user_email = ?`;
     // Check if there are no orders found
-    if (ordersSnapshot.empty) {
-      return res.status(200).json({ status: true, result: [] });
-    }
 
-    // Extract order data from snapshot
-    const orders = ordersSnapshot.docs.map((doc) => ({
-      id: doc.id, // Include the document ID
-      ...doc.data(),
-    }));
+    const result = await new Promise((resolve, reject) => {
+      db.query(sql, [email], (err, result) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(result);
+      });
+    });
 
-    // Send the orders in the response
-    return res.status(200).json({ status: true, result: orders });
+    return res.status(200).json({ status: true, result: result });
   } catch (error) {
     console.log(error);
     return res
