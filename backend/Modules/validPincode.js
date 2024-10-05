@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { db } = require("../firebaseAdmin");
+const db = require("../Modules/mysql");
 const checkPincode = async (req, res, next) => {
   const { pincode } = req.params;
   try {
@@ -19,7 +19,7 @@ const checkPincode = async (req, res, next) => {
           district: district,
         };
 
-        const pincodeRef = db.collection("pincodes").doc(); 
+        const pincodeRef = db.collection("pincodes").doc();
         await pincodeRef.set(pincodeData);
         return res
           .status(400)

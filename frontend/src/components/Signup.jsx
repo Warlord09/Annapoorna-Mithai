@@ -27,7 +27,7 @@ const SignupForm = ({ onClose }) => {
     onClose();
   };
   const handleCreateAccount = async() =>{
-    const response = await axios.post("http://localhost:8000/customers/signup",{
+    const response = await axios.post("https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/customers/signup",{
         name,
         email,
         mobile,

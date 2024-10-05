@@ -18,7 +18,7 @@ const Admin = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        "https://annapoorna-backend.onrender.com/admin/manage-orders",
+        "https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/admin/manage-orders",
         {
           deliveryStatus: status,
         }
@@ -36,7 +36,7 @@ const Admin = () => {
     setIsLoading(true);
     try {
       await axios.patch(
-        "https://annapoorna-backend.onrender.com/admin/manage-orders",
+        "https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/admin/manage-orders",
         {
           order_id: orderId,
           delivery_status: newStatus,
