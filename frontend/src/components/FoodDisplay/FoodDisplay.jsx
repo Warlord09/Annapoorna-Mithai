@@ -75,7 +75,7 @@ const FoodDisplay = ({ category, setCategory, searchTerm, setSearchTerm }) => {
       quantity,
       weight: selectedWeight,
       price: getWeightPrice() * quantity,
-      image: selectedItem.image[0],
+      image: selectedItem.image,
     };
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
     existingCart.push(cartItem);

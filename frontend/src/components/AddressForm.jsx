@@ -39,8 +39,8 @@ const AddressForm = ({ onClose, setHasVerified }) => {
   const handleVerifyAddress = async () => {
     setIsVerifying(true);
     try {
-      const response = await axios.post('http://localhost:8000/feature/checkPincode',{
-        pincode : pincode
+      const response = await axios.post('https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/feature/checkPincode',{
+        pincode : formData.pincode
       });
       setIsAddressAvailable(response.data.status);
     } catch (error) {
@@ -116,7 +116,7 @@ const AddressForm = ({ onClose, setHasVerified }) => {
             <div className="mb-4">
               <label className="flex items-center">
                 <input
-                  type="button"
+                  type="checkbox"
                   checked={isVerifying}
                   onChange={handleVerifyAddress}
                   className="mr-2"

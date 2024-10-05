@@ -277,18 +277,18 @@ export const food_list = [
     category: "Savouries",
     life: "4 Months",
   },
+  // {
+  //   _id: "16",
+  //   name: "Breakfast Mixture",
+  //   image: [food_1],
+  //   weights: [{ weight: "250G", price: 275, mrp: 400 }],
+  //   offer: 1500,
+  //   description:
+  //     "A combo of Oats, Honey, Pumpkin Seeds, Amonds, Wheat Flakes, Corn Flakes, Cranberry, Black Currant.",
+  //   life: "2 Months",
+  // },
   {
     _id: "16",
-    name: "Breakfast Mixture",
-    image: [food_1],
-    weights: [{ weight: "250G", price: 275, mrp: 400 }],
-    offer: 1500,
-    description:
-      "A combo of Oats, Honey, Pumpkin Seeds, Amonds, Wheat Flakes, Corn Flakes, Cranberry, Black Currant.",
-    life: "2 Months",
-  },
-  {
-    _id: "17",
     name: "Choco Dip Badam",
     image: [almond],
     weights: [{ weight: "150G", price: 225, mrp: 300 }],
@@ -297,16 +297,16 @@ export const food_list = [
       " Roasted Almond Coated with Chocolate.",
     life: "2 Months",
   },
-  {
-    _id: "18",
-    name: "Karupati Kadalai Mithai",
-    image: [Makhana],
-    weights: [{ weight: "200G", price: 125, mrp: 190 }],
-    offer: 1500,
-    description:
-      "A combo of Oats, Honey, Pumpkin Seeds, Amonds, Wheat Flakes, Corn Flakes, Cranberry, Black Currant.",
-    life: "2 Months",
-  },
+  // {
+  //   _id: "18",
+  //   name: "Karupati Kadalai Mithai",
+  //   image: [Makhana],
+  //   weights: [{ weight: "200G", price: 125, mrp: 190 }],
+  //   offer: 1500,
+  //   description:
+  //     "A combo of Oats, Honey, Pumpkin Seeds, Amonds, Wheat Flakes, Corn Flakes, Cranberry, Black Currant.",
+  //   life: "2 Months",
+  // },
 ];
 
 // const story = [

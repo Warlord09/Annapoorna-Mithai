@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BsChevronCompactLeft, BsChevronCompactRight } from "react-icons/bs";
 import { useSwipeable } from "react-swipeable";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
   const slides = [
@@ -27,6 +28,8 @@ const Hero = () => {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const navigate = useNavigate();
 
   const prevSlide = () => {
     const isFirstSlide = currentIndex === 0;
@@ -72,7 +75,8 @@ const Hero = () => {
       {/* Image Section */}
       <div
         {...handlers}
-        className="relative flex items-center justify-center w-full h-auto lg:h-auto bg-gradient-to-b from-[#FFFFFF] to-[#FFF9EA] overflow-hidden"
+        className="relative cursor-pointer flex items-center justify-center w-full h-auto lg:h-auto bg-gradient-to-b from-[#FFFFFF] to-[#FFF9EA] overflow-hidden"
+        onClick={()=>{navigate("/shop")}}
       >
         <img
           src={slides[currentIndex].url}

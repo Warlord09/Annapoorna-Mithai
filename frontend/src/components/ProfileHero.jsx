@@ -44,7 +44,7 @@ const ProfileHero = () => {
     try {
       console.log("Sending OTP to:", inputValue);
       const response = await axios.post(
-        "https://annapoorna-backend.onrender.com/customers/send-otp",
+        "https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/customers/send-otp",
         { email: inputValue },
         { withCredentials: true }
       );
@@ -95,7 +95,7 @@ const ProfileHero = () => {
       }
       const cart = localStorage.getItem("cart");
       const response = await axios.post(
-        "https://annapoorna-backend.onrender.com/customers/orders",
+        "https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/customers/orders",
         {
           totalPrice: total.toFixed(2),
           currency: "INR",
@@ -138,7 +138,7 @@ const ProfileHero = () => {
             console.log(delivery);
             setIsLoading(true);
             const paymentResponse = await axios.post(
-              "https://annapoorna-backend.onrender.com/customers/verify-order",
+              "https://us-central1-annapoornamithai-webapp.cloudfunctions.net/app/customers/verify-order",
               {
                 orderId: order.id,
                 paymentId: response.razorpay_payment_id,
